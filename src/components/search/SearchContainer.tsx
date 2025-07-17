@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { SpellData } from '@/types';
 import SearchBox from './SearchBox';
 import TagFilterButtons from './TagFilterButtons';
+import QuickAccessButtons from './QuickAccessButtons';
 
 interface SearchContainerProps {
   spells: SpellData[];
@@ -22,7 +23,18 @@ const SearchContainer: React.FC<SearchContainerProps> = ({
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [selectedMagicType, setSelectedMagicType] = useState<string | null>(null);
   const [selectedEffectTag, setSelectedEffectTag] = useState<string | null>(null);
+  const [selectedQuickCategory, setSelectedQuickCategory] = useState<string | null>(null);
   const [filteredSpells, setFilteredSpells] = useState<SpellData[]>(spells || []);
+
+  // カテゴリマッピング（クイックアクセスカテゴリと実際のカテゴリの対応）
+  const categoryMapping: Record<string, string[]> = {
+    'attack': ['攻撃魔法', '弱点魔法', '雷攻撃魔法', '炎攻撃魔法', '氷攻撃魔法', '風攻撃魔法', '重力攻撃魔法', '特殊攻撃魔法'],
+    'heal': ['体力上昇魔法'],
+    'buff': ['攻撃力上昇魔法', '防御力上昇魔法', '移動速度上昇魔法', 'ボーナス上昇魔法', '強化魔法'],
+    'debuff': ['能力値変更', '割合体力減少魔法', '割合攻撃力減少魔法', '毒魔法'],
+    'summon': ['動物召喚魔法', '精霊召喚魔法'],
+    'utility': ['特殊能力上昇魔法', '時間操作魔法', '一文字魔法', 'ギャンブル魔法', '特殊魔法'],
+  };
 
   // 検索クエリとタグフィルターに基づいて呪文をフィルタリング
   useEffect(() => {
@@ -49,6 +61,17 @@ const SearchContainer: React.FC<SearchContainerProps> = ({
         spell.カテゴリ === selectedMagicType ||
         (spell.カテゴリ && spell.カテゴリ.includes(selectedMagicType))
       );
+    }
+
+    // クイックアクセスカテゴリでフィルタリング
+    if (selectedQuickCategory && categoryMapping[selectedQuickCategory]) {
+      const categories = categoryMapping[selectedQuickCategory];
+      results = results.filter(spell => {
+        return categories.some(category =>
+          spell.カテゴリ === category ||
+          (spell.カテゴリ && spell.カテゴリ.includes(category))
+        );
+      });
     }
 
     // 効果タグでフィルタリング
