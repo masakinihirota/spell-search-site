@@ -1,0 +1,61 @@
+{
+  "popularSpells": ["spell_1", "spell_2", "spell_3", "spell_4", "spell_5"],
+  "settings": {
+    "maxMessagesPerUser": 100,
+    "maxMessageLength": 500,
+    "defaultSearchDebounceTime": 300,
+    "enableRealTimeChat": true,
+    "enableSpellEditing": true,
+    "showQuickAccessButtons": true
+  },
+  "quickAccessButtons": [
+    {
+      "id": "btn_1",
+      "label": "回復",
+      "searchQuery": "回復",
+      "category": "よく使う"
+    },
+    {
+      "id": "btn_2",
+      "label": "攻撃",
+      "searchQuery": "攻撃",
+      "category": "よく使う"
+    },
+    {
+      "id": "btn_3",
+      "label": "防御",
+      "searchQuery": "防御",
+      "category": "よく使う"
+    },
+    {
+      "id": "btn_4",
+      "label": "ボナス",
+      "searchQuery": "ボナス",
+      "category": "人気"
+    },
+    {
+      "id": "btn_5",
+      "label": "ムテキパル",
+      "searchQuery": "ムテキパル",
+      "category": "人気"
+    },
+    {
+      "id": "btn_6",
+      "label": "356",
+      "searchQuery": "356",
+      "category": "数字"
+    },
+    {
+      "id": "btn_7",
+      "label": "247",
+      "searchQuery": "247",
+      "category": "数字"
+    },
+    {
+      "id": "btn_8",
+      "label": "123",
+      "searchQuery": "123",
+      "category": "数字"
+    }
+  ]
+}
