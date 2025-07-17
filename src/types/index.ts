@@ -1,22 +1,95 @@
 /**
- * スペルトナエルデータの型定義
+ * スペルデータの型定義（設計書に基づく）
+ */
+export interface SpellData {
+  id: string;
+  名前: string;
+  必要な歌の段: string;
+  唱える段の順番: string;
+  カテゴリ: string;
+  説明?: string;
+  タグ?: string[];
+}
+
+/**
+ * スペルキャスト型定義（英語フィールド名を持つ互換性のある型）
  */
 export interface SpellCast {
   id: string;
-  requiredSong: string;  // 必要な歌の段（例: "356"）
-  castOrder: string;     // 唱える段の順番（例: "653"）
-  name: string;          // 呪文の名前（例: "ボナス"）
-  effect: string;        // 呪文の効果
-  description: string;   // 詳細説明
-  category: string;      // 呪文のカテゴリ
-  tags: string[];        // 関連タグ
-  isPopular: boolean;    // 人気の呪文かどうか
-  spellSequence: {       // 呪文の詳細な構成要素
-    boardNumbers: number[];  // 必要な歌の段の数字（例: [3,5,6,6,5,3]）
-    characterSets: string[]; // 各段に対応する文字セット（例: ["サシスセソ", "ナニヌネノ", ...]）
-  };
-  createdAt: string;
-  updatedAt: string;
+  name: string;
+  requiredSong: string;
+  castOrder: string;
+  category: string;
+  effect?: string;
+  description?: string;
+  tags: string[];
+  isPopular?: boolean;
+  spellSequence?: SpellSequence;
+  createdAt?: string;
+  updatedAt?: string;
+  // 日本語フィールド名との互換性
+  名前?: string;
+  必要な歌の段?: string;
+  唱える段の順番?: string;
+  カテゴリ?: string;
+  説明?: string;
+  タグ?: string[];
+}
+
+/**
+ * スペルカテゴリの型定義
+ */
+export interface SpellCategory {
+  id: string;
+  name: string;
+  description?: string;
+}
+
+/**
+ * 検索クエリの型定義
+ */
+export interface SearchQuery {
+  text: string;
+  categories: string[];
+  tags?: string[];
+  sortBy?: 'name' | 'category' | 'complexity';
+  sortDirection?: 'asc' | 'desc';
+}
+
+/**
+ * アプリケーション状態の型定義
+ */
+export interface AppState {
+  spells: SpellData[];
+  filteredSpells: SpellData[];
+  selectedSpell: SpellData | null;
+  searchQuery: SearchQuery;
+  isLoading: boolean;
+  error: string | null;
+  highlightedRows: number[];
+}
+
+/**
+ * スペルボードの行データ型定義
+ */
+export interface SpellBoardRow {
+  id: number;
+  characters: string[];
+}
+
+/**
+ * スペルボードの型定義
+ */
+export interface SpellBoard {
+  rows: SpellBoardRow[];
+}
+
+/**
+ * スペルシーケンスの型定義
+ */
+export interface SpellSequence {
+  boardNumbers: number[];
+  characterSets: string[];
 }
 
 /**

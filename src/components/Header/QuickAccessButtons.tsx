@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { SpellCast } from '@/types';
 
 interface QuickAccessButtonsProps {
@@ -8,92 +8,92 @@ interface QuickAccessButtonsProps {
 
 /**
  * クイックアクセスボタンコンポーネント
- * 購入した呪文と数字ボタンへのクイックアクセスを提供
+ * カテゴリ別のクイックアクセスボタンとお気に入りスペルを表示する
  */
-const QuickAccessButtons: React.FC<QuickAccessButtonsProps> = ({ onButtonClick, favoriteSpells = [] }) => {
-  // 選択された数字ボタンの状態を管理
-  const [selectedNumbers, setSelectedNumbers] = useState<number[]>([]);
+const QuickAccessButtons: React.FC<QuickAccessButtonsProps> = ({
+  onButtonClick,
+  favoriteSpells = []
+}) => {
+  // 選択されたカテゴリの状態
+  const [selectedCategory, setSelectedCategory] = useState<string | null>('all');
 
-  // デフォルトの購入済み呪文リスト（購入した呪文がない場合に表示）
-  const defaultFavoriteSpells = [
-    { id: 'spell_1', name: 'ボナス' },
-    { id: 'spell_2', name: 'ムテキパル' },
-    { id: 'spell_3', name: 'ヒール' },
-    { id: 'spell_4', name: 'バリア' },
+  // カテゴリリスト
+  const categories = [
+    { id: 'all', name: '全て', query: '' },
+    { id: 'damage', name: 'ダメージ', query: 'ダメージ' },
+    { id: 'heal', name: '回復', query: '回復' },
+    { id: 'attack', name: '攻撃力', query: '攻撃力' },
+    { id: 'defense', name: '防御力', query: '防御力' },
+    { id: 'speed', name: '移動速度', query: '移動速度' },
+    { id: 'money', name: 'お金', query: 'お金' },
+    { id: 'time', name: '時間', query: '時間' },
+    { id: 'summon', name: '召喚', query: '召喚' },
+    { id: 'gamble', name: 'ギャンブル', query: 'ギャンブル' },
+    { id: 'enhance', name: '強化', query: '強化' },
+    { id: 'special', name: '特殊', query: '特殊' }
   ];
 
-  // 購入した呪文がある場合は、それを使用する
-  const favoriteButtonSpells = favoriteSpells.length > 0
-    ? favoriteSpells.map(spell => ({ id: spell.id, name: spell.name }))
-    : defaultFavoriteSpells;
-
-  // 数字ボタンのトグル処理
-  const handleNumberToggle = (num: number) => {
-    if (selectedNumbers.includes(num)) {
-      // すでに選択されている場合は選択解除
-      setSelectedNumbers(selectedNumbers.filter(n => n !== num));
-    } else {
-      // 選択されていない場合は選択に追加
-      setSelectedNumbers([...selectedNumbers, num]);
+  // コンポーネントがマウントされたときに「全て」のタグを選択状態にする
+  useEffect(() => {
+    if (selectedCategory === 'all') {
+      onButtonClick('');
     }
+  }, []);
 
-    // 検索クエリを更新（選択された数字を文字列として連結）
-    const query = selectedNumbers.includes(num)
-      ? selectedNumbers.filter(n => n !== num).join('')
-      : [...selectedNumbers, num].join('');
-
-    onButtonClick(query);
+  // カテゴリボタンのクリックハンドラ
+  const handleCategoryClick = (category: { id: string; name: string; query: string }) => {
+    // 同じカテゴリをクリックした場合は選択を解除
+    if (selectedCategory === category.id) {
+      setSelectedCategory(null);
+      onButtonClick('');
+    } else {
+      setSelectedCategory(category.id);
+      onButtonClick(category.query);
+    }
   };
 
-  // リセットボタンの処理
-  const handleReset = () => {
-    setSelectedNumbers([]);
-    onButtonClick('');
+  // お気に入りスペルのクリックハンドラ
+  const handleFavoriteClick = (spell: SpellCast) => {
+    onButtonClick(spell.name);
   };
 
   return (
-    <div className="my-4">
-      {/* 購入した呪文ボタン */}
-      <div className="flex flex-wrap gap-2 mb-4 justify-center">
-        {favoriteButtonSpells.map((spell) => (
-          <button
-            key={spell.id}
-            onClick={() => onButtonClick(spell.name)}
-            className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full hover:bg-blue-200 transition-colors"
-          >
-            {spell.name}
-          </button>
-        ))}
-      </div>
-
-      {/* 数字ボタン（1-8）とリセットボタン */}
-      <div className="flex justify-center">
-        <div className="flex flex-wrap gap-2 justify-center items-center max-w-md">
-          {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
+    <div className="mb-6">
+      <div className="mb-4">
+        <h3 className="text-lg font-semibold mb-2">カテゴリ</h3>
+        <div className="flex flex-wrap gap-2">
+          {categories.map((category) => (
             <button
-              key={num}
-              onClick={() => handleNumberToggle(num)}
-              className={`w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full transition-colors text-base sm:text-lg font-bold
-                ${selectedNumbers.includes(num)
-                  ? 'bg-blue-500 text-white hover:bg-blue-600'
-                  : 'bg-gray-300 text-gray-800 hover:bg-gray-400 hover:text-gray-900'}`}
+              key={category.id}
+              onClick={() => handleCategoryClick(category)}
+              className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                selectedCategory === category.id
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+              }`}
             >
-              {num}
+              {category.name}
             </button>
           ))}
-
-          {/* リセットボタン */}
-          <button
-            onClick={handleReset}
-            className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center bg-red-400 text-white rounded-full hover:bg-red-500 transition-colors"
-            title="リセット"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-            </svg>
-          </button>
         </div>
       </div>
+
+      {favoriteSpells.length > 0 && (
+        <div>
+          <h3 className="text-lg font-semibold mb-2">お気に入り</h3>
+          <div className="flex flex-wrap gap-2">
+            {favoriteSpells.map((spell) => (
+              <button
+                key={spell.id}
+                onClick={() => handleFavoriteClick(spell)}
+                className="px-3 py-2 rounded-md text-sm font-medium bg-yellow-100 text-yellow-800 hover:bg-yellow-200 transition-colors"
+              >
+                {spell.name}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

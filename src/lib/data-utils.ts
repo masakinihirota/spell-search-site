@@ -48,8 +48,42 @@ export async function writeJsonFile<T>(fileName: string, data: T): Promise<void>
  */
 export async function getAllSpells(): Promise<SpellCast[]> {
   try {
-    const data = await readJsonFile<{ spells: SpellCast[] }>('spells.json');
-    return data.spells;
+    const data = await readJsonFile<{ spells: Record<string, SpellCast[]> }>('spells.json');
+
+    // スペルデータがオブジェクトの場合（カテゴリごとの配列）、すべてのカテゴリの配列を結合
+    if (data.spells && typeof data.spells === 'object' && !Array.isArray(data.spells)) {
+      const allSpells: SpellCast[] = [];
+
+      // 各カテゴリの配列を結合
+      Object.entries(data.spells).forEach(([category, spellsInCategory]) => {
+        // カテゴリ情報を追加
+        const spellsWithCategory = spellsInCategory.map(spell => ({
+          ...spell,
+          id: spell.id || `spell_${spell.名前}_${Date.now()}`, // IDがない場合は生成
+          name: spell.名前 || spell.name || '', // 名前フィールドの互換性
+          requiredSong: spell.必要な歌の段 || spell.requiredSong || '', // 必要な歌の段フィールドの互換性
+          castOrder: spell.唱える段の順番 || spell.castOrder || '', // 唱える段の順番フィールドの互換性
+          category: category, // カテゴリ情報を追加
+          effect: spell.effect || '', // 効果（存在しない場合は空文字）
+          description: spell.description || '', // 説明（存在しない場合は空文字）
+          tags: spell.tags || [], // タグ（存在しない場合は空配列）
+          isPopular: spell.isPopular || false, // 人気かどうか（存在しない場合はfalse）
+          spellSequence: spell.spellSequence || {
+            boardNumbers: [],
+            characterSets: []
+          }, // 呪文の詳細な構成要素（存在しない場合は空オブジェクト）
+          createdAt: spell.createdAt || new Date().toISOString(), // 作成日時（存在しない場合は現在時刻）
+          updatedAt: spell.updatedAt || new Date().toISOString() // 更新日時（存在しない場合は現在時刻）
+        }));
+
+        allSpells.push(...spellsWithCategory);
+      });
+
+      return allSpells;
+    }
+
+    // 既に配列の場合はそのまま返す
+    return Array.isArray(data.spells) ? data.spells : [];
   } catch (error) {
     console.error('スペルデータの取得に失敗しました:', error);
     return [];
@@ -87,7 +121,8 @@ export async function searchSpells(query: string): Promise<SpellCast[]> {
 
     return spells.filter(spell =>
       spell.name.toLowerCase().includes(lowerQuery) ||
-      spell.number.includes(lowerQuery) ||
+      spell.requiredSong.includes(lowerQuery) ||
+      spell.castOrder.includes(lowerQuery) ||
       spell.effect.toLowerCase().includes(lowerQuery) ||
       spell.category.toLowerCase().includes(lowerQuery) ||
       spell.tags.some(tag => tag.toLowerCase().includes(lowerQuery))

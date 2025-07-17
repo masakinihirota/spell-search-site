@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { SpellCast } from '@/types';
+import { SpellData } from '@/types';
 
 interface SpellBoardProps {
-  spells: SpellCast[];
+  spells: SpellData[];
   selectedSpellId: string | null;
-  onSpellSelect: (spell: SpellCast) => void;
-  favoriteSpells?: SpellCast[];
-  onToggleFavorite?: (spell: SpellCast) => void;
+  onSpellSelect: (spell: SpellData) => void;
+  favoriteSpells?: SpellData[];
+  onToggleFavorite?: (spell: SpellData) => void;
 }
 
 /**
@@ -17,7 +17,7 @@ const SpellBoard: React.FC<SpellBoardProps> = ({ spells, selectedSpellId, onSpel
   // 表示するアイテム数の状態
   const [visibleItemCount, setVisibleItemCount] = useState(20);
   // 表示するスペルのリスト
-  const [visibleSpells, setVisibleSpells] = useState<SpellCast[]>([]);
+  const [visibleSpells, setVisibleSpells] = useState<SpellData[]>([]);
   // スクロール検出用の参照
   const loaderRef = useRef<HTMLDivElement>(null);
 
@@ -88,10 +88,10 @@ const SpellBoard: React.FC<SpellBoardProps> = ({ spells, selectedSpellId, onSpel
                     onChange={() => {}} // React requires onChange handler for controlled components
                   />
                 </td>
-                <td className="py-2 sm:py-3 px-2 sm:px-4 cursor-pointer text-sm sm:text-base" onClick={() => onSpellSelect(spell)}>{spell.requiredSong}</td>
-                <td className="py-2 sm:py-3 px-2 sm:px-4 cursor-pointer text-sm sm:text-base" onClick={() => onSpellSelect(spell)}>{spell.castOrder}</td>
-                <td className="py-2 sm:py-3 px-2 sm:px-4 font-medium cursor-pointer text-sm sm:text-base" onClick={() => onSpellSelect(spell)}>{spell.name}</td>
-                <td className="py-2 sm:py-3 px-2 sm:px-4 cursor-pointer hidden sm:table-cell text-sm sm:text-base" onClick={() => onSpellSelect(spell)}>{spell.category}</td>
+                <td className="py-2 sm:py-3 px-2 sm:px-4 cursor-pointer text-sm sm:text-base" onClick={() => onSpellSelect(spell)}>{spell.必要な歌の段}</td>
+                <td className="py-2 sm:py-3 px-2 sm:px-4 cursor-pointer text-sm sm:text-base" onClick={() => onSpellSelect(spell)}>{spell.唱える段の順番}</td>
+                <td className="py-2 sm:py-3 px-2 sm:px-4 font-medium cursor-pointer text-sm sm:text-base" onClick={() => onSpellSelect(spell)}>{spell.名前}</td>
+                <td className="py-2 sm:py-3 px-2 sm:px-4 cursor-pointer hidden sm:table-cell text-sm sm:text-base" onClick={() => onSpellSelect(spell)}>{spell.カテゴリ}</td>
               </tr>
             ))}
           </tbody>

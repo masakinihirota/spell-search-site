@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>スペルデータ一覧</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+        h2 {
+            color: #2980b9;
+            margin-top: 40px;
+            padding: 10px;
+            background-color: #ecf0f1;
+            border-left: 5px solid #3498db;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+        tr:hover {
+            background-color: #f1f9ff;
+        }
+        .category-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+            position: sticky;
+            top: 0;
+            background-color: #f5f5f5;
+            padding: 10px 0;
+            z-index: 100;
+        }
+        .category-nav a {
+            display: inline-block;
+            padding: 8px 15px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        .category-nav a:hover {
+            background-color: #2980b9;
+        }
+        .search-container {
+            margin-bottom: 20px;
+        }
+        #search-input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .number-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin: 10px 0;
+        }
+        .number-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background-color: #95a5a6;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .number-btn.active {
+            background-color: #e74c3c;
+        }
+        .number-btn:hover {
+            background-color: #7f8c8d;
+        }
+        .clear-btn {
+            padding: 8px 15px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        .clear-btn:hover {
+            background-color: #c0392b;
+        }
+        @media (max-width: 768px) {
+            th, td {
+                padding: 8px;
+            }
+            .category-nav {
+                padding: 10px;
+            }
+            .category-nav a {
+                padding: 6px 10px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>スペルデータ一覧</h1>
+
+    <div class="search-container">
+        <input type="text" id="search-input" placeholder="呪文名、必要な歌の段、唱える段の順番で検索...">
+        <div class="number-filters">
+            <button class="number-btn" data-number="1">1</button>
+            <button class="number-btn" data-number="2">2</button>
+            <button class="number-btn" data-number="3">3</button>
+            <button class="number-btn" data-number="4">4</button>
+            <button class="number-btn" data-number="5">5</button>
+            <button class="number-btn" data-number="6">6</button>
+            <button class="number-btn" data-number="7">7</button>
+            <button class="number-btn" data-number="8">8</button>
+            <button class="number-btn" data-number="9">9</button>
+            <button class="clear-btn">クリア</button>
+        </div>
+    </div>
+
+    <div class="category-nav" id="category-nav">
+        <!-- カテゴリーナビゲーションはJavaScriptで生成 -->
+    </div>
+
+    <div id="spell-data">
+        <!-- スペルデータはJavaScriptで生成 -->
+    </div>
+
+    <script>
+        // ハイドレーションエラーを防ぐために、DOMContentLoadedイベントを待つ
+        document.addEventListener('DOMContentLoaded', function() {
+            // JSONデータを読み込む
+            fetch('/data/spells.json')
+                .then(response => response.json())
+                .then(data => {
+                    const spells = data.spells || {};
+
+                    // カテゴリーナビゲーションを生成
+                    const categories = Object.keys(spells);
+                    const categoryNav = document.getElementById('category-nav');
+
+                    // カテゴリーナビゲーションをクリア
+                    categoryNav.innerHTML = '';
+
+                    categories.forEach(category => {
+                        const link = document.createElement('a');
+                        link.href = `#${category}`;
+                        link.textContent = category;
+                        categoryNav.appendChild(link);
+                    });
+
+                    // スペルデータを表示
+                    const spellDataContainer = document.getElementById('spell-data');
+
+                    // スペルデータコンテナをクリア
+                    spellDataContainer.innerHTML = '';
+
+                    categories.forEach(category => {
+                        const categorySpells = spells[category];
+
+                        // カテゴリー見出し
+                        const heading = document.createElement('h2');
+                        heading.id = category;
+                        heading.textContent = category;
+                        spellDataContainer.appendChild(heading);
+
+                        // テーブル作成
+                        const table = document.createElement('table');
+                        table.className = 'spell-table';
+
+                        // テーブルヘッダー
+                        const thead = document.createElement('thead');
+                        const headerRow = document.createElement('tr');
+
+                        const nameHeader = document.createElement('th');
+                        nameHeader.textContent = '名前';
+                        headerRow.appendChild(nameHeader);
+
+                        const requiredHeader = document.createElement('th');
+                        requiredHeader.textContent = '必要な歌の段';
+                        headerRow.appendChild(requiredHeader);
+
+                        const orderHeader = document.createElement('th');
+                        orderHeader.textContent = '唱える段の順番';
+                        headerRow.appendChild(orderHeader);
+
+                        thead.appendChild(headerRow);
+                        table.appendChild(thead);
+
+                        // テーブルボディ
+                        const tbody = document.createElement('tbody');
+
+                        categorySpells.forEach(spell => {
+                            const row = document.createElement('tr');
+
+                            const nameCell = document.createElement('td');
+                            nameCell.textContent = spell.名前;
+                            row.appendChild(nameCell);
+
+                            const requiredCell = document.createElement('td');
+                            requiredCell.textContent = spell.必要な歌の段;
+                            row.appendChild(requiredCell);
+
+                            const orderCell = document.createElement('td');
+                            orderCell.textContent = spell.唱える段の順番;
+                            row.appendChild(orderCell);
+
+                            row.dataset.name = spell.名前;
+                            row.dataset.required = spell.必要な歌の段;
+                            row.dataset.order = spell.唱える段の順番;
+
+                            tbody.appendChild(row);
+                        });
+
+                        table.appendChild(tbody);
+                        spellDataContainer.appendChild(table);
+                    });
+
+                    // 検索機能
+                    const searchInput = document.getElementById('search-input');
+                    const tables = document.querySelectorAll('.spell-table');
+                    const numberButtons = document.querySelectorAll('.number-btn');
+                    const clearButton = document.querySelector('.clear-btn');
+                    let selectedNumbers = [];
+
+                    function filterSpells() {
+                        const searchTerm = searchInput.value.toLowerCase();
+
+                        tables.forEach(table => {
+                            const rows = table.querySelectorAll('tbody tr');
+                            let visibleCount = 0;
+
+                            rows.forEach(row => {
+                                const name = row.dataset.name.toLowerCase();
+                                const required = row.dataset.required;
+                                const order = row.dataset.order;
+
+                                // 検索語句とのマッチング
+                                const matchesSearch = searchTerm === '' ||
+                                    name.includes(searchTerm) ||
+                                    required.includes(searchTerm) ||
+                                    order.includes(searchTerm);
+
+                                // 選択された数字とのマッチング
+                                const matchesNumbers = selectedNumbers.length === 0 ||
+                                    selectedNumbers.every(num => required.includes(num));
+
+                                if (matchesSearch && matchesNumbers) {
+                                    row.style.display = '';
+                                    visibleCount++;
+                                } else {
+                                    row.style.display = 'none';
+                                }
+                            });
+
+                            // カテゴリーの表示/非表示
+                            const categoryHeading = table.previousElementSibling;
+                            if (visibleCount === 0) {
+                                categoryHeading.style.display = 'none';
+                                table.style.display = 'none';
+                            } else {
+                                categoryHeading.style.display = '';
+                                table.style.display = '';
+                            }
+                        });
+                    }
+
+                    // イベントリスナーを追加する前に既存のリスナーを削除
+                    searchInput.removeEventListener('input', filterSpells);
+                    searchInput.addEventListener('input', filterSpells);
+
+                    // 数字ボタンの処理
+                    numberButtons.forEach(button => {
+                        // 既存のイベントリスナーを削除
+                        const oldButton = button.cloneNode(true);
+                        button.parentNode.replaceChild(oldButton, button);
+
+                        oldButton.addEventListener('click', () => {
+                            const number = oldButton.dataset.number;
+                            const index = selectedNumbers.indexOf(number);
+
+                            if (index === -1) {
+                                selectedNumbers.push(number);
+                                oldButton.classList.add('active');
+                            } else {
+                                selectedNumbers.splice(index, 1);
+                                oldButton.classList.remove('active');
+                            }
+
+                            filterSpells();
+                        });
+                    });
+
+                    // クリアボタンの処理
+                    // 既存のイベントリスナーを削除
+                    const oldClearButton = clearButton.cloneNode(true);
+                    clearButton.parentNode.replaceChild(oldClearButton, clearButton);
+
+                    oldClearButton.addEventListener('click', () => {
+                        searchInput.value = '';
+                        selectedNumbers = [];
+                        document.querySelectorAll('.number-btn').forEach(btn => btn.classList.remove('active'));
+                        filterSpells();
+                    });
+                })
+                .catch(error => {
+                    console.error('スペルデータの読み込みに失敗しました:', error);
+                    document.getElementById('spell-data').innerHTML = `
+                        <p>データの読み込みに失敗しました。</p>
+                        <p>エラー: ${error.message}</p>
+                    `;
+                });
+        });
+    </script>
+</body>
+</html>

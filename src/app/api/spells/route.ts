@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAllSpells, searchSpells, addSpell } from '@/lib/data-utils';
-import { SpellCast } from '@/types';
+import { getAllSpells, addSpell } from '@/lib/data-utils';
+import { searchSpells as searchSpellsUtil } from '@/lib/searchUtils';
+import { SpellCast, SpellData } from '@/types';
 
 /**
  * スペル一覧を取得するAPI
@@ -15,15 +16,29 @@ export async function GET(request: NextRequest) {
 
     let spells: SpellCast[];
 
+    // 全てのスペルを取得
+    const allSpells = await getAllSpells();
+
     if (query) {
       // 検索クエリがある場合は検索結果を返す
-      spells = await searchSpells(query);
+      spells = searchSpellsUtil(allSpells, query);
     } else {
       // 検索クエリがない場合は全てのスペルを返す
-      spells = await getAllSpells();
+      spells = allSpells;
     }
 
-    return NextResponse.json({ spells }, { status: 200 });
+    // SpellCast型からSpellData型に変換
+    const spellsData: SpellData[] = spells.map(spell => ({
+      id: spell.id,
+      名前: spell.name || spell.名前 || '',
+      必要な歌の段: spell.requiredSong || spell.必要な歌の段 || '',
+      唱える段の順番: spell.castOrder || spell.唱える段の順番 || '',
+      カテゴリ: spell.category || spell.カテゴリ || '',
+      説明: spell.description || spell.説明 || '',
+      タグ: spell.tags || spell.タグ || []
+    }));
+
+    return NextResponse.json({ spells: spellsData }, { status: 200 });
   } catch (error) {
     console.error('スペルデータの取得に失敗しました:', error);
     return NextResponse.json(
@@ -42,7 +57,7 @@ export async function POST(request: NextRequest) {
     const newSpellData = await request.json();
 
     // 必須フィールドの検証
-    const requiredFields = ['name', 'number', 'effect', 'description', 'category'];
+    const requiredFields = ['name', 'requiredSong', 'castOrder', 'effect', 'description', 'category'];
     for (const field of requiredFields) {
       if (!newSpellData[field]) {
         return NextResponse.json(
