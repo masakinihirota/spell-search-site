@@ -48,3 +48,9 @@ https://www.youtube.com/watch?v=X2xA7JVbhGc
 
 masakinihirota/spell-search-site
 https://github.com/masakinihirota/spell-search-site
+
+## デプロイ
+
+vercel
+スペルトナエル検索サイト
+https://spell-search-site.vercel.app/
