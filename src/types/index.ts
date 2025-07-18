@@ -92,17 +92,7 @@ export interface SpellSequence {
   characterSets: string[];
 }
 
-/**
- * チャットメッセージの型定義
- */
-export interface ChatMessage {
-  id: string;
-  username: string;
-  message: string;
-  timestamp: string;
-  relatedSpellId?: string;
-  type: 'general' | 'spell-related';
-}
+
 
 /**
  * カナボード行の型定義

@@ -1,6 +1,6 @@
 import fs from 'fs/promises';
 import path from 'path';
-import { SpellCast, ChatMessage } from '@/types';
+import { SpellCast } from '@/types';
 
 /**
  * データファイルのパスを取得する
@@ -214,82 +214,7 @@ export async function deleteSpell(id: string): Promise<boolean> {
   }
 }
 
-/**
- * チャットメッセージを全て取得する
- * @returns メッセージの配列
- */
-export async function getAllMessages(): Promise<ChatMessage[]> {
-  try {
-    const data = await readJsonFile<{ messages: ChatMessage[] }>('messages.json');
-    return data.messages;
-  } catch (error) {
-    console.error('メッセージの取得に失敗しました:', error);
-    return [];
-  }
-}
 
-/**
- * 新しいメッセージを追加する
- * @param newMessage 新しいメッセージデータ
- * @returns 追加されたメッセージ
- */
-export async function addMessage(newMessage: Omit<ChatMessage, 'id' | 'timestamp'>): Promise<ChatMessage> {
-  try {
-    const data = await readJsonFile<{ messages: ChatMessage[] }>('messages.json');
-
-    const message: ChatMessage = {
-      ...newMessage,
-      id: `msg_${Date.now()}`,
-      timestamp: new Date().toISOString()
-    };
-
-    data.messages.push(message);
-    await writeJsonFile('messages.json', data);
-
-    return message;
-  } catch (error) {
-    console.error('メッセージの追加に失敗しました:', error);
-    throw error;
-  }
-}
-
-/**
- * メッセージを削除する
- * @param id メッセージID
- * @returns 削除が成功したかどうか
- */
-export async function deleteMessage(id: string): Promise<boolean> {
-  try {
-    const data = await readJsonFile<{ messages: ChatMessage[] }>('messages.json');
-    const messageIndex = data.messages.findIndex(message => message.id === id);
-
-    if (messageIndex === -1) {
-      return false;
-    }
-
-    data.messages.splice(messageIndex, 1);
-    await writeJsonFile('messages.json', data);
-    return true;
-  } catch (error) {
-    console.error(`ID ${id} のメッセージ削除に失敗しました:`, error);
-    throw error;
-  }
-}
-
-/**
- * 特定のスペルに関連するメッセージを取得する
- * @param spellId スペルID
- * @returns 関連するメッセージの配列
- */
-export async function getMessagesBySpellId(spellId: string): Promise<ChatMessage[]> {
-  try {
-    const messages = await getAllMessages();
-    return messages.filter(message => message.relatedSpellId === spellId);
-  } catch (error) {
-    console.error(`スペルID ${spellId} に関連するメッセージの取得に失敗しました:`, error);
-    return [];
-  }
-}
 
 /**
  * データディレクトリが存在しない場合は作成する
@@ -318,12 +243,7 @@ export async function createInitialDataFiles(): Promise<void> {
       await writeJsonFile('spells.json', { spells: [] });
     }
 
-    // messages.json が存在しない場合は作成
-    try {
-      await fs.access(getDataFilePath('messages.json'));
-    } catch {
-      await writeJsonFile('messages.json', { messages: [] });
-    }
+
 
     // config.json が存在しない場合は作成
     try {
