@@ -1,8 +1,8 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { renderHook, act } from '@testing-library/react';
-import { useSpellBoard } from '../useSpellBoard';
-import { SpellCast } from '@/types';
+import { act, renderHook } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import * as spellUtils from '@/lib/spellUtils';
+import { SpellCast } from '@/types';
+import { useSpellBoard } from '../useSpellBoard';
 
 // getHighlightedCellsFromSpellName関数をモック化
 vi.mock('@/lib/spellUtils', () => ({
@@ -51,7 +51,7 @@ describe('useSpellBoard フックの統合テスト', () => {
       { rowId: 2, columnIndex: 7 }  // ル
     ];
 
-    (spellUtils.getHighlightedCellsFromSpellName as any).mockReturnValue(mockHighlightedCells);
+    (spellUtils.getHighlightedCellsFromSpellName as jest.Mock).mockReturnValue(mockHighlightedCells);
 
     // フックをレンダリング
     const { result } = renderHook(() => useSpellBoard(testSpells));
@@ -90,7 +90,7 @@ describe('useSpellBoard フックの統合テスト', () => {
       { rowId: 4, columnIndex: 3 }  // テ
     ];
 
-    (spellUtils.getHighlightedCellsFromSpellName as any).mockReturnValue(mockHighlightedCells);
+    (spellUtils.getHighlightedCellsFromSpellName as jest.Mock).mockReturnValue(mockHighlightedCells);
 
     // フックをレンダリング
     const { result } = renderHook(() => useSpellBoard(testSpells));
@@ -162,7 +162,7 @@ describe('useSpellBoard フックの統合テスト', () => {
     ];
 
     // モックの戻り値を設定（呼び出し順に応じて異なる値を返す）
-    (spellUtils.getHighlightedCellsFromSpellName as any)
+    (spellUtils.getHighlightedCellsFromSpellName as jest.Mock)
       .mockReturnValueOnce(mockHighlightedCells1)
       .mockReturnValueOnce(mockHighlightedCells2);
 
@@ -211,7 +211,7 @@ describe('useSpellBoard フックの統合テスト', () => {
 
     // モックの戻り値を設定
     const mockHighlightedCells = [{ rowId: 1, columnIndex: 1 }];
-    (spellUtils.getHighlightedCellsFromSpellName as any).mockReturnValue(mockHighlightedCells);
+    (spellUtils.getHighlightedCellsFromSpellName as jest.Mock).mockReturnValue(mockHighlightedCells);
 
     // フックをレンダリング
     const { result } = renderHook(() => useSpellBoard([japaneseOnlySpell, englishOnlySpell]));

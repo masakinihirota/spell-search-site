@@ -1,7 +1,9 @@
 /** @jsxImportSource react */
+
+import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { SpellData } from '@/types';
 import Home from '../page';
 
 // モックの設定
@@ -10,7 +12,7 @@ vi.mock('@/components/Header', () => ({
 }));
 
 vi.mock('@/components/search/SearchContainer', () => ({
-  default: ({ onSearchResults }: any) => (
+  default: ({ onSearchResults }: { onSearchResults: (results: any[]) => void }) => (
     <div data-testid="mock-search-container">
       <button onClick={() => onSearchResults([])}>Search</button>
     </div>
@@ -18,22 +20,31 @@ vi.mock('@/components/search/SearchContainer', () => ({
 }));
 
 vi.mock('@/components/search/SearchResults', () => ({
-  default: ({ onSpellSelect }: any) => (
-    <div data-testid="mock-search-results">
-      <button onClick={() => onSpellSelect({ id: '1', 名前: 'テスト', 必要な歌の段: '123' })}>
-        Select Spell
-      </button>
-    </div>
+  default: ({ onSpellSelect }: { onSpellSelect: (spell: SpellData) => void }) => (
+    <button
+      type="button"
+      onClick={() =>
+        onSpellSelect({
+          id: '1',
+          名前: 'テスト',
+          必要な歌の段: '123',
+          唱える段の順番: '1',
+          カテゴリ: 'テストカテゴリ',
+        })
+      }
+    >
+      Select Spell
+    </button>
   )
 }));
 
 vi.mock('@/components/MainContent/KanaBoard', () => ({
-  default: ({ onRowNumberClick }: any) => (
+  default: ({ onRowNumberClick }: { onRowNumberClick: (row: number) => void }) => (
     <div data-testid="mock-kana-board">
-      <button data-testid="row-number-1" onClick={() => onRowNumberClick && onRowNumberClick(1)}>
+      <button data-testid="row-number-1" type="button" onClick={() => onRowNumberClick?.(1)}>
         Row 1
       </button>
-      <button data-testid="row-number-2" onClick={() => onRowNumberClick && onRowNumberClick(2)}>
+      <button data-testid="row-number-2" type="button" onClick={() => onRowNumberClick?.(2)}>
         Row 2
       </button>
     </div>
