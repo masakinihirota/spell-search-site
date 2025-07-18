@@ -1,36 +1,36 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 次回作
 
-## Getting Started
+ヘッダにあるトップのBetaの隣に次回作のURLリンクを宣伝としておきます。
 
-First, run the development server:
+masakinihirota
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+https://vns-masakinihirota.vercel.app/
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+このリンクをクリックすると、次回作の詳細情報や進捗状況を確認できます。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+# このアプリの概要
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 対象
 
-## Learn More
+スペルトナエル
 
-To learn more about Next.js, take a look at the following resources:
+## 説明
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+歌ビルドの歌を探しやすくするWebアプリです。
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+このアプリでは、以下の機能を提供します：
+- 歌の検索機能
+- 歌の詳細情報の表示
+- お気に入りリストの作成と管理
 
-## Deploy on Vercel
+## 攻略
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+スペルトナエル(持ち込み無し) U-END を楽にクリアするための「考えない歌金魚ビルド」 ｜masakinihirota
+https://note.com/masakinihirota/n/ncc599bf9af3b
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 実戦動画
+
+スペルトナエル(持ち込み無し) U-END を楽にクリアするための「考えない歌金魚ビルド」 - YouTube
+https://www.youtube.com/watch?v=X2xA7JVbhGc
+
+

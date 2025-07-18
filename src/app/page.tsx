@@ -219,9 +219,6 @@ export default function Home() {
                   highlightedColumns={highlightedSpell ? highlightedSpell.唱える段の順番.split('').map(Number).map(n => n - 1) : highlightedColumns}
                   onCellClick={handleCellSelect}
                 />
-                <div className="mt-4 text-sm text-gray-600">
-                  <p>※ セルをクリックすると、その行/列を使用する呪文が表示されます</p>
-                </div>
               </div>
             </div>
           </>
