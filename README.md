@@ -33,4 +33,7 @@ https://note.com/masakinihirota/n/ncc599bf9af3b
 スペルトナエル(持ち込み無し) U-END を楽にクリアするための「考えない歌金魚ビルド」 - YouTube
 https://www.youtube.com/watch?v=X2xA7JVbhGc
 
+## コード
 
+masakinihirota/spell-search-site
+https://github.com/masakinihirota/spell-search-site
