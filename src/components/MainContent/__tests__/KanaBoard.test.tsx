@@ -37,6 +37,17 @@ describe('KanaBoard', () => {
     expect(screen.getByText('カ')).toBeInTheDocument();
   });
 
+  it('行番号のスタイリングが正しく適用されること', () => {
+    render(<KanaBoard />);
+
+    // 行番号セルを取得
+    const rowNumberCell = screen.getAllByText('1')[0].closest('td');
+
+    // 行番号セルに適切なスタイリングが適用されていることを確認
+    expect(rowNumberCell).toHaveClass('font-extrabold');
+    expect(rowNumberCell).toHaveClass('bg-gray-100');
+  });
+
   it('行のハイライトが正しく適用されること', () => {
     const highlightedRows = [1];
     render(<KanaBoard highlightedRows={highlightedRows} />);
@@ -48,6 +59,12 @@ describe('KanaBoard', () => {
     // ハイライトされていない行を確認
     const nonHighlightedRow = screen.getByText('カ').closest('tr');
     expect(nonHighlightedRow).not.toHaveClass('bg-yellow-100');
+
+    // ハイライトされた行の行番号セルが正しくスタイリングされていることを確認
+    const highlightedRowNumberCell = screen.getAllByText('1')[0].closest('td');
+    expect(highlightedRowNumberCell).toHaveClass('bg-yellow-200');
+    expect(highlightedRowNumberCell).toHaveClass('text-black');
+    expect(highlightedRowNumberCell).toHaveClass('ring-2');
   });
 
   it('列のハイライトが正しく適用されること', () => {

@@ -107,8 +107,8 @@ export default function Home() {
   // KanaBoardコンポーネントをメモ化（条件分岐の外に移動）
   const memoizedKanaBoard = useMemo(() => (
     <KanaBoard
-      highlightedRows={highlightedSpell ? highlightedSpell.必要な歌の段.split('').map(Number) : highlightedRows}
-      highlightedColumns={highlightedSpell ? highlightedSpell.唱える段の順番.split('').map(Number).map(n => n - 1) : highlightedColumns}
+      highlightedRows={highlightedSpell ? highlightedSpell.必要な歌の段.split('').map(Number) : highlightedRows} // 呪文選択時も行ハイライトを表示
+      highlightedColumns={highlightedSpell ? [] : highlightedColumns} // 呪文選択時は列ハイライトを無効化
       highlightedCells={highlightedSpell ? getHighlightedCellsFromSpellName(highlightedSpell.名前, kanaBoard) : highlightedCells}
       onCellClick={handleCellSelect}
     />
