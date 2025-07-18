@@ -7,6 +7,8 @@ interface KanaBoardProps {
   highlightedColumns?: number[];
   highlightedCells?: Array<{rowId: number, columnIndex: number}>; // 呪文名の文字に対応するセルをハイライトするためのプロパティ
   onCellClick?: (rowId: number, columnIndex: number) => void;
+  activeNumberButtons?: number[]; // 所持している呪文の数字
+  onRowNumberClick?: (rowId: number) => void; // 行番号クリック時のコールバック
 }
 
 /**
@@ -17,7 +19,9 @@ const KanaBoard: React.FC<KanaBoardProps> = ({
   highlightedRows = [],
   highlightedColumns = [],
   highlightedCells = [],
-  onCellClick
+  onCellClick,
+  activeNumberButtons = [],
+  onRowNumberClick
 }) => {
   // ハイライトセルのマップをメモ化（効率的なルックアップのため）
   const highlightedCellsMap = useMemo(() => {
@@ -65,10 +69,15 @@ const KanaBoard: React.FC<KanaBoardProps> = ({
               }`}
             >
               <td
-                className={`py-2 px-3 border-b border-r border-gray-300 font-extrabold text-center text-base sm:text-lg md:text-xl
+                className={`py-2 px-3 border-b border-r border-gray-300 font-extrabold text-center text-base sm:text-lg md:text-xl cursor-pointer
                   ${highlightedRows.includes(row.id)
-                    ? 'bg-yellow-200 text-black ring-2 ring-yellow-400 ring-inset'
-                    : 'bg-gray-100 text-gray-800'}`}
+                    ? activeNumberButtons.includes(row.id)
+                      ? 'bg-yellow-200 text-black ring-2 ring-red-500 ring-inset' // ハイライト状態かつ所持状態
+                      : 'bg-yellow-200 text-black ring-2 ring-yellow-400 ring-inset' // ハイライト状態のみ
+                    : activeNumberButtons.includes(row.id)
+                      ? 'bg-gray-100 text-gray-800 ring-2 ring-red-500 ring-inset' // 所持状態のみ
+                      : 'bg-gray-100 text-gray-800'}`}
+                onClick={() => onRowNumberClick && onRowNumberClick(row.id)}
               >
                 {row.id}
               </td>

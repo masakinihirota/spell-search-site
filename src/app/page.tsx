@@ -104,6 +104,11 @@ export default function Home() {
     handleSpellSelect
   } = useSpellBoard(spells);
 
+  // 行番号クリック時のハンドラ
+  const handleRowNumberClick = useCallback((rowId: number) => {
+    toggleNumberButton(rowId);
+  }, [toggleNumberButton]);
+
   // KanaBoardコンポーネントをメモ化（条件分岐の外に移動）
   const memoizedKanaBoard = useMemo(() => (
     <KanaBoard
@@ -111,8 +116,10 @@ export default function Home() {
       highlightedColumns={highlightedSpell ? [] : highlightedColumns} // 呪文選択時は列ハイライトを無効化
       highlightedCells={highlightedSpell ? getHighlightedCellsFromSpellName(highlightedSpell.名前, kanaBoard) : highlightedCells}
       onCellClick={handleCellSelect}
+      activeNumberButtons={activeNumberButtons} // 所持している呪文の数字
+      onRowNumberClick={handleRowNumberClick} // 行番号クリック時のコールバック
     />
-  ), [highlightedSpell, highlightedRows, highlightedColumns, highlightedCells, handleCellSelect]);
+  ), [highlightedSpell, highlightedRows, highlightedColumns, highlightedCells, handleCellSelect, activeNumberButtons, handleRowNumberClick]);
 
   return (
     <main className="min-h-screen bg-gray-50">

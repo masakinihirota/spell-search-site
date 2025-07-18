@@ -104,4 +104,36 @@ describe('KanaBoard', () => {
     // コールバックが正しく呼ばれたことを確認
     expect(onCellClick).toHaveBeenCalledWith(1, 0);
   });
+
+  it('所持呪文の行番号が正しくスタイリングされること', () => {
+    const activeNumberButtons = [1];
+    render(<KanaBoard activeNumberButtons={activeNumberButtons} />);
+
+    // 所持呪文の行番号セルを取得
+    const activeRowNumberCell = screen.getAllByText('1')[0].closest('td');
+
+    // 所持呪文の行番号セルに適切なスタイリングが適用されていることを確認
+    expect(activeRowNumberCell).toHaveClass('ring-2');
+    expect(activeRowNumberCell).toHaveClass('ring-red-500');
+
+    // 所持していない呪文の行番号セルを取得
+    const inactiveRowNumberCell = screen.getAllByText('2')[0].closest('td');
+
+    // 所持していない呪文の行番号セルには特別なスタイリングが適用されていないことを確認
+    expect(inactiveRowNumberCell).not.toHaveClass('ring-red-500');
+  });
+
+  it('行番号クリック時にコールバックが呼ばれること', () => {
+    const onRowNumberClick = vi.fn();
+    render(<KanaBoard onRowNumberClick={onRowNumberClick} />);
+
+    // 行番号セルを取得
+    const rowNumberCell = screen.getAllByText('1')[0].closest('td');
+
+    // 行番号セルをクリック
+    rowNumberCell?.click();
+
+    // コールバックが正しく呼ばれたことを確認
+    expect(onRowNumberClick).toHaveBeenCalledWith(1);
+  });
 });
