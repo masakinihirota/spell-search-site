@@ -1,4 +1,4 @@
-import { KanaBoard, KanaBoardRow, HighlightedCell } from '@/types';
+import type { HighlightedCell, KanaBoard } from '@/types';
 
 // 文字位置のマッピングをキャッシュするためのMap
 // キー: カタカナ文字, 値: 位置情報の配列
@@ -67,7 +67,9 @@ class LRUCache<K, V> {
     // キャッシュが容量に達している場合は、最も古いエントリ（最初のエントリ）を削除
     else if (this.cache.size >= this.capacity) {
       const oldestKey = this.cache.keys().next().value;
-      this.cache.delete(oldestKey);
+      if (oldestKey !== undefined) {
+        this.cache.delete(oldestKey);
+      }
     }
     // 新しいエントリを追加
     this.cache.set(key, value);

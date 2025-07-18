@@ -1,3 +1,14 @@
+VercelなどでのBUILDでは、
+
+`npm run --legacy-peer-deps`
+と設定します。
+
+参考
+【Vercel】 デプロイ時にConflicting peer dependencyが発生した際にエラーとしない対応
+https://zenn.dev/someone7140/articles/9c7e38cf1106d4
+
+
+
 # 次回作
 
 ヘッダにあるトップのBetaの隣に次回作のURLリンクを宣伝としておきます。

@@ -123,7 +123,7 @@ export async function searchSpells(query: string): Promise<SpellCast[]> {
       spell.name.toLowerCase().includes(lowerQuery) ||
       spell.requiredSong.includes(lowerQuery) ||
       spell.castOrder.includes(lowerQuery) ||
-      spell.effect.toLowerCase().includes(lowerQuery) ||
+      spell.effect?.toLowerCase().includes(lowerQuery) ||
       spell.category.toLowerCase().includes(lowerQuery) ||
       spell.tags.some(tag => tag.toLowerCase().includes(lowerQuery))
     );
