@@ -1,4 +1,138 @@
-import { KanaBoard, KanaBoardRow } from '@/types';
+import { KanaBoard, KanaBoardRow, HighlightedCell } from '@/types';
+
+// 文字位置のマッピングをキャッシュするためのMap
+// キー: カタカナ文字, 値: 位置情報の配列
+type CharPositionMap = Map<string, HighlightedCell[]>;
+
+// カナボードの文字位置マッピングをキャッシュ
+let charPositionMapCache: CharPositionMap | null = null;
+
+/**
+ * カナボードの文字位置マッピングを作成する
+ * @param kanaBoard カナボードのデータ
+ * @returns 文字位置のマッピング
+ */
+function createCharPositionMap(kanaBoard: KanaBoard): CharPositionMap {
+  const map = new Map<string, HighlightedCell[]>();
+
+  // カナボードの各行をチェック
+  for (const row of kanaBoard.rows) {
+    // 行内の各列をチェック
+    for (let colIndex = 0; colIndex < row.characters.length; colIndex++) {
+      const char = row.characters[colIndex];
+
+      // マップに文字の位置情報を追加
+      if (!map.has(char)) {
+        map.set(char, []);
+      }
+
+      map.get(char)!.push({
+        rowId: row.id,
+        columnIndex: colIndex
+      });
+    }
+  }
+
+  return map;
+}
+
+// 呪文名とそのハイライトセルのキャッシュ
+// LRU (Least Recently Used) キャッシュの実装
+class LRUCache<K, V> {
+  private capacity: number;
+  private cache: Map<K, V>;
+
+  constructor(capacity: number) {
+    this.capacity = capacity;
+    this.cache = new Map<K, V>();
+  }
+
+  get(key: K): V | undefined {
+    if (!this.cache.has(key)) {
+      return undefined;
+    }
+
+    // キーが存在する場合、そのエントリを取得して再度追加することで「最近使用した」状態にする
+    const value = this.cache.get(key)!;
+    this.cache.delete(key);
+    this.cache.set(key, value);
+    return value;
+  }
+
+  set(key: K, value: V): void {
+    // キーが既に存在する場合は削除
+    if (this.cache.has(key)) {
+      this.cache.delete(key);
+    }
+    // キャッシュが容量に達している場合は、最も古いエントリ（最初のエントリ）を削除
+    else if (this.cache.size >= this.capacity) {
+      const oldestKey = this.cache.keys().next().value;
+      this.cache.delete(oldestKey);
+    }
+    // 新しいエントリを追加
+    this.cache.set(key, value);
+  }
+
+  has(key: K): boolean {
+    return this.cache.has(key);
+  }
+
+  clear(): void {
+    this.cache.clear();
+  }
+
+  get size(): number {
+    return this.cache.size;
+  }
+}
+
+// 呪文名とそのハイライトセルのLRUキャッシュ（最大200エントリ）
+const spellNameCellsCache = new LRUCache<string, HighlightedCell[]>(200);
+
+/**
+ * 呪文名からハイライトするセルを特定する関数（最適化版）
+ * @param spellName 呪文名
+ * @param kanaBoard カナボードのデータ
+ * @returns ハイライトするセルの配列
+ */
+export function getHighlightedCellsFromSpellName(
+  spellName: string,
+  kanaBoard: KanaBoard
+): HighlightedCell[] {
+  // 入力チェック
+  if (!spellName || spellName.length === 0) {
+    return [];
+  }
+
+  // キャッシュにある場合はキャッシュから返す
+  const cachedResult = spellNameCellsCache.get(spellName);
+  if (cachedResult !== undefined) {
+    return cachedResult;
+  }
+
+  // 文字位置マッピングがない場合は作成
+  if (!charPositionMapCache) {
+    charPositionMapCache = createCharPositionMap(kanaBoard);
+  }
+
+  const highlightedCells: HighlightedCell[] = [];
+
+  // 呪文名の各文字について
+  for (const char of spellName) {
+    // マップから文字の位置情報を取得
+    const positions = charPositionMapCache.get(char);
+
+    // 位置情報がある場合は追加
+    if (positions && positions.length > 0) {
+      highlightedCells.push(...positions);
+    }
+  }
+
+  // 結果をキャッシュに保存
+  spellNameCellsCache.set(spellName, highlightedCells);
+
+  return highlightedCells;
+}
 
 /**
  * 行番号と列番号から文字を取得する

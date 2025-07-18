@@ -118,3 +118,11 @@ export interface KanaBoardRow {
 export interface KanaBoard {
   rows: KanaBoardRow[];
 }
+
+/**
+ * ハイライトするセルの位置を表す型定義
+ */
+export interface HighlightedCell {
+  rowId: number;
+  columnIndex: number;
+}

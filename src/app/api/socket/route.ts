@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { Server } from 'socket.io';
-import { createServer } from 'http';
-import { addMessage, deleteMessage } from '@/lib/data-utils';
-import { ChatMessage } from '@/types';
+import { NextRequest, NextResponse } from "next/server";
+import { Server } from "socket.io";
+import { createServer } from "http";
+import { addMessage, deleteMessage } from "@/lib/data-utils";
+import { ChatMessage } from "@/types";
 
 // Socket.ioサーバーのインスタンス
 let io: any;
@@ -22,66 +22,72 @@ function initSocketServer() {
   // Socket.ioサーバーを初期化
   io = new Server(httpServer, {
     cors: {
-      origin: '*',
-      methods: ['GET', 'POST']
-    }
+      origin: "*",
+      methods: ["GET", "POST"],
+    },
   });
 
   // 接続イベントのハンドリング
-  io.on('connection', (socket: any) => {
-    console.log('新しいクライアントが接続しました:', socket.id);
+  io.on("connection", (socket: any) => {
+    console.log("新しいクライアントが接続しました:", socket.id);
 
     // ユーザー参加イベント
-    socket.on('user:join', (username: string) => {
+    socket.on("user:join", (username: string) => {
       console.log(`ユーザー ${username} が参加しました`);
       activeUsers.add(username);
 
       // 全クライアントにユーザー参加を通知
-      io.emit('user:joined', { username, activeUsers: Array.from(activeUsers) });
+      io.emit("user:joined", {
+        username,
+        activeUsers: Array.from(activeUsers),
+      });
     });
 
     // ユーザー退出イベント
-    socket.on('user:leave', (username: string) => {
+    socket.on("user:leave", (username: string) => {
       console.log(`ユーザー ${username} が退出しました`);
       activeUsers.delete(username);
 
       // 全クライアントにユーザー退出を通知
-      io.emit('user:left', { username, activeUsers: Array.from(activeUsers) });
+      io.emit("user:left", { username, activeUsers: Array.from(activeUsers) });
     });
 
     // 新しいメッセージイベント
-    socket.on('message:new', async (messageData: Omit<ChatMessage, 'id' | 'timestamp'>) => {
-      try {
-        // メッセージをデータベースに保存
-        const newMessage = await addMessage(messageData);
+    socket.on(
+      "message:new",
+      async (messageData: Omit<ChatMessage, "id" | "timestamp">) => {
+        try {
+          // メッセージをデータベースに保存
+          const newMessage = await addMessage(messageData);
 
-        // 全クライアントに新しいメッセージを通知
-        io.emit('message:received', newMessage);
-      } catch (error) {
-        console.error('メッセージの保存に失敗しました:', error);
-        socket.emit('error', { message: 'メッセージの保存に失敗しました' });
+          // 全クライアントに新しいメッセージを通知
+          io.emit("message:received", newMessage);
+        } catch (error) {
+          console.error("メッセージの保存に失敗しました:", error);
+          socket.emit("error", { message: "メッセージの保存に失敗しました" });
+        }
       }
-    });
+    );
 
     // メッセージ削除イベント
-    socket.on('message:delete', async (messageId: string) => {
+    socket.on("message:delete", async (messageId: string) => {
       try {
         // メッセージをデータベースから削除
         const success = await deleteMessage(messageId);
 
         if (success) {
           // 全クライアントにメッセージ削除を通知
-          io.emit('message:deleted', { id: messageId });
+          io.emit("message:deleted", { id: messageId });
         }
       } catch (error) {
-        console.error('メッセージの削除に失敗しました:', error);
-        socket.emit('error', { message: 'メッセージの削除に失敗しました' });
+        console.error("メッセージの削除に失敗しました:", error);
+        socket.emit("error", { message: "メッセージの削除に失敗しました" });
       }
     });
 
     // 切断イベント
-    socket.on('disconnect', () => {
-      console.log('クライアントが切断しました:', socket.id);
+    socket.on("disconnect", () => {
+      console.log("クライアントが切断しました:", socket.id);
     });
   });
 
@@ -101,13 +107,13 @@ export async function GET(request: NextRequest) {
     initSocketServer();
 
     return NextResponse.json(
-      { message: 'Socket.ioサーバーが起動しています' },
+      { message: "Socket.ioサーバーが起動しています" },
       { status: 200 }
     );
   } catch (error) {
-    console.error('Socket.ioサーバーの初期化に失敗しました:', error);
+    console.error("Socket.ioサーバーの初期化に失敗しました:", error);
     return NextResponse.json(
-      { error: 'Socket.ioサーバーの初期化に失敗しました' },
+      { error: "Socket.ioサーバーの初期化に失敗しました" },
       { status: 500 }
     );
   }

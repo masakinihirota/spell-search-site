@@ -1,12 +1,14 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import Header from '@/components/Header';
 import SearchContainer from '@/components/search/SearchContainer';
 import SearchResults from '@/components/search/SearchResults';
 import KanaBoard from '@/components/MainContent/KanaBoard';
 import { useSpellBoard } from '@/hooks/useSpellBoard';
 import { SpellData } from '@/types';
+import { getHighlightedCellsFromSpellName } from '@/lib/spellUtils';
+import { kanaBoard } from '@/data/kanaBoard';
 
 /**
  * ホームページコンポーネント
@@ -63,9 +65,11 @@ export default function Home() {
     setFilteredSpells(results);
   }, []);
 
-  // スペルハイライト処理（ボードに表示するだけ）
+  // スペルハイライト処理（ボードに表示するだけ）- メモ化
   const handleSpellHighlight = useCallback((spell: SpellData) => {
     setHighlightedSpell(spell);
+    // 注：KanaBoardコンポーネントに渡すhighlightedCellsは、
+    // highlightedSpellが設定されたときに直接getHighlightedCellsFromSpellName関数を使用して生成されます
   }, []);
 
   // お気に入りトグル処理
@@ -95,8 +99,20 @@ export default function Home() {
   const {
     highlightedRows,
     highlightedColumns,
-    handleCellSelect
+    highlightedCells,
+    handleCellSelect,
+    handleSpellSelect
   } = useSpellBoard(spells);
+
+  // KanaBoardコンポーネントをメモ化（条件分岐の外に移動）
+  const memoizedKanaBoard = useMemo(() => (
+    <KanaBoard
+      highlightedRows={highlightedSpell ? highlightedSpell.必要な歌の段.split('').map(Number) : highlightedRows}
+      highlightedColumns={highlightedSpell ? highlightedSpell.唱える段の順番.split('').map(Number).map(n => n - 1) : highlightedColumns}
+      highlightedCells={highlightedSpell ? getHighlightedCellsFromSpellName(highlightedSpell.名前, kanaBoard) : highlightedCells}
+      onCellClick={handleCellSelect}
+    />
+  ), [highlightedSpell, highlightedRows, highlightedColumns, highlightedCells, handleCellSelect]);
 
   return (
     <main className="min-h-screen bg-gray-50">
@@ -111,7 +127,7 @@ export default function Home() {
           />
         </div>
 
-        {loading ? (
+      {loading ? (
           <div className="flex justify-center py-12">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
           </div>
@@ -214,11 +230,8 @@ export default function Home() {
 
               <div className="bg-white rounded-lg shadow-md p-4">
                 <h2 className="text-xl font-bold mb-4">スペルボード</h2>
-                <KanaBoard
-                  highlightedRows={highlightedSpell ? highlightedSpell.必要な歌の段.split('').map(Number) : highlightedRows}
-                  highlightedColumns={highlightedSpell ? highlightedSpell.唱える段の順番.split('').map(Number).map(n => n - 1) : highlightedColumns}
-                  onCellClick={handleCellSelect}
-                />
+                {/* メモ化されたKanaBoardを使用 */}
+                {memoizedKanaBoard}
               </div>
             </div>
           </>
