@@ -42,7 +42,6 @@
     <div className="flex items-center">
       <h1 className="text-2xl font-bold text-blue-600">スペルトナエル検索</h1>
       <span className="ml-2 text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded">Beta</span>
-      <span className="ml-2 text-xs bg-green-100 text-green-800 px-2 py-1 rounded">ver1.9.0に対応</span>
       <a
         href="https://vns-masakinihirota.vercel.app/"
         className="ml-2 text-sm text-gray-600 hover:text-blue-600 transition-colors flex items-center"
