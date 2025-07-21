@@ -11,7 +11,11 @@ export default function UsagePage() {
 			<Header />
 
 			<div className="container mx-auto px-4 py-8">
-				<h1 className="text-2xl font-bold mb-4">使い方</h1>
+				<h1 className="text-2xl font-bold mb-4">
+					使い方(PCで使うことを想定しています。)
+				</h1>
+				<p className="mb-6">スマホでは非常に使いづらいと思います。</p>
+
 				<div className="bg-white rounded-lg shadow-md p-6">
 					<ol className="list-decimal pl-6 space-y-4">
 						<li>
