@@ -38,7 +38,7 @@ const QuickAccessButtons: React.FC<QuickAccessButtonsProps> = ({
     if (selectedCategory === 'all') {
       onButtonClick('');
     }
-  }, []);
+  }, [selectedCategory, onButtonClick]);
 
   // カテゴリボタンのクリックハンドラ
   const handleCategoryClick = (category: { id: string; name: string; query: string }) => {

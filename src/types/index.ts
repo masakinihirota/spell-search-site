@@ -92,7 +92,19 @@ export interface SpellSequence {
   characterSets: string[];
 }
 
+/**
+ * 歌のマッチング結果の型定義
+ */
+export interface SongMatchingResult {
+  possessedDigits: string;
+  missingDigits: string;
+  matchingPercentage: number;
+}
 
+/**
+ * マッチングキャッシュの型定義
+ */
+export type MatchingCache = Map<string, SongMatchingResult>;
 
 /**
  * カナボード行の型定義

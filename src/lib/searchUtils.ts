@@ -40,14 +40,16 @@ export function filterSpells(spells: SpellCast[], query: string): SpellCast[] {
 	const hiraganaQuery = katakanaToHiragana(lowerQuery);
 
 	return spells.filter((spell) => {
+		// spell.nameがundefinedまたはnullの場合はスキップ
+		if (!spell.name) return false;
 		// 名前で検索（ひらがな/カタカナ対応）
-		const nameLower = spell.name.toLowerCase();
+		const nameLower = spell.name.toLowerCase() || '';
 		const nameHiragana = katakanaToHiragana(nameLower);
 		const nameKatakana = hiraganaToKatakana(nameLower);
 
 		// 必要な歌の段、唱える段の順番で検索
-		const requiredSongMatch = spell.requiredSong.includes(lowerQuery);
-		const castOrderMatch = spell.castOrder.includes(lowerQuery);
+		const requiredSongMatch = spell.requiredSong?.includes(lowerQuery);
+		const castOrderMatch = spell.castOrder?.includes(lowerQuery);
 
 		// 効果、カテゴリ、タグで検索
 		const effectMatch =
@@ -56,9 +58,9 @@ export function filterSpells(spells: SpellCast[], query: string): SpellCast[] {
 			(spell.effect?.toLowerCase().includes(katakanaQuery) ?? false);
 
 		const categoryMatch =
-			spell.category.toLowerCase().includes(lowerQuery) ||
-			spell.category.toLowerCase().includes(hiraganaQuery) ||
-			spell.category.toLowerCase().includes(katakanaQuery);
+			spell.category?.toLowerCase().includes(lowerQuery) ||
+			spell.category?.toLowerCase().includes(hiraganaQuery) ||
+			spell.category?.toLowerCase().includes(katakanaQuery);
 
 		const tagMatch = spell.tags.some(
 			(tag) =>
@@ -99,30 +101,38 @@ export function sortSpellsByRelevance(
 	const hiraganaQuery = katakanaToHiragana(lowerQuery);
 
 	return [...spells].sort((a, b) => {
+		// nameがundefinedの場合の処理
+		if (!a.name && !b.name) return 0;
+		if (!a.name) return 1;
+		if (!b.name) return -1;
+
 		// 名前の完全一致を最優先
+		const aNameLower = a.name.toLowerCase();
+		const bNameLower = b.name.toLowerCase();
+
 		const aNameExactMatch =
-			a.name.toLowerCase() === lowerQuery ||
-			katakanaToHiragana(a.name.toLowerCase()) === hiraganaQuery ||
-			hiraganaToKatakana(a.name.toLowerCase()) === katakanaQuery;
+			aNameLower === lowerQuery ||
+			katakanaToHiragana(aNameLower) === hiraganaQuery ||
+			hiraganaToKatakana(aNameLower) === katakanaQuery;
 
 		const bNameExactMatch =
-			b.name.toLowerCase() === lowerQuery ||
-			katakanaToHiragana(b.name.toLowerCase()) === hiraganaQuery ||
-			hiraganaToKatakana(b.name.toLowerCase()) === katakanaQuery;
+			bNameLower === lowerQuery ||
+			katakanaToHiragana(bNameLower) === hiraganaQuery ||
+			hiraganaToKatakana(bNameLower) === katakanaQuery;
 
 		if (aNameExactMatch && !bNameExactMatch) return -1;
 		if (!aNameExactMatch && bNameExactMatch) return 1;
 
 		// 名前の前方一致を次に優先
 		const aNameStartsWith =
-			a.name.toLowerCase().startsWith(lowerQuery) ||
-			katakanaToHiragana(a.name.toLowerCase()).startsWith(hiraganaQuery) ||
-			hiraganaToKatakana(a.name.toLowerCase()).startsWith(katakanaQuery);
+			aNameLower.startsWith(lowerQuery) ||
+			katakanaToHiragana(aNameLower).startsWith(hiraganaQuery) ||
+			hiraganaToKatakana(aNameLower).startsWith(katakanaQuery);
 
 		const bNameStartsWith =
-			b.name.toLowerCase().startsWith(lowerQuery) ||
-			katakanaToHiragana(b.name.toLowerCase()).startsWith(hiraganaQuery) ||
-			hiraganaToKatakana(b.name.toLowerCase()).startsWith(katakanaQuery);
+			bNameLower.startsWith(lowerQuery) ||
+			katakanaToHiragana(bNameLower).startsWith(hiraganaQuery) ||
+			hiraganaToKatakana(bNameLower).startsWith(katakanaQuery);
 
 		if (aNameStartsWith && !bNameStartsWith) return -1;
 		if (!aNameStartsWith && bNameStartsWith) return 1;

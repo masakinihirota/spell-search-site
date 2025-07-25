@@ -26,7 +26,8 @@ class SpellMatchingCache {
   public rebuildCache(possessedSong: string): void {
     const newCache: MatchingCache = new Map();
     for (const spell of this.allSpells) {
-      const result = calculateSongMatching(spell.requiredSong, possessedSong);
+      const requiredSong = spell.requiredSong || '';
+      const result = calculateSongMatching(requiredSong, possessedSong);
       newCache.set(spell.id, result);
     }
     this.cache = newCache;
