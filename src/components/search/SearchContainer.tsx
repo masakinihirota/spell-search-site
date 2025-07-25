@@ -47,10 +47,10 @@ const SearchContainer: React.FC<SearchContainerProps> = ({
       const query = searchQuery.toLowerCase();
       results = results.filter(spell => {
         return (
-          spell.名前.toLowerCase().includes(query) ||
-          spell.必要な歌の段.includes(query) ||
-          spell.唱える段の順番.includes(query) ||
-          (spell.説明 && spell.説明.toLowerCase().includes(query))
+          (spell.名前 || '').toLowerCase().includes(query) ||
+          (spell.必要な歌の段 || '').includes(query) ||
+          (spell.唱える段の順番 || '').includes(query) ||
+          (spell.説明 || '').toLowerCase().includes(query)
         );
       });
     }
@@ -58,8 +58,8 @@ const SearchContainer: React.FC<SearchContainerProps> = ({
     // 魔法の種類でフィルタリング
     if (selectedMagicType) {
       results = results.filter(spell =>
-        spell.カテゴリ === selectedMagicType ||
-        (spell.カテゴリ && spell.カテゴリ.includes(selectedMagicType))
+        (spell.カテゴリ || '') === selectedMagicType ||
+        (spell.カテゴリ || '').includes(selectedMagicType)
       );
     }
 
@@ -68,8 +68,8 @@ const SearchContainer: React.FC<SearchContainerProps> = ({
       const categories = categoryMapping[selectedQuickCategory];
       results = results.filter(spell => {
         return categories.some(category =>
-          spell.カテゴリ === category ||
-          (spell.カテゴリ && spell.カテゴリ.includes(category))
+          (spell.カテゴリ || '') === category ||
+          (spell.カテゴリ || '').includes(category)
         );
       });
     }
@@ -78,42 +78,42 @@ const SearchContainer: React.FC<SearchContainerProps> = ({
     if (selectedEffectTag) {
       results = results.filter(spell => {
         // 特定のタグに対する特別な処理
-        if (selectedEffectTag === 'ダメージ' && spell.カテゴリ && spell.カテゴリ.includes('攻撃')) {
+        if (selectedEffectTag === 'ダメージ' && (spell.カテゴリ || '').includes('攻撃')) {
           return true;
         }
-        if (selectedEffectTag === '回復' && spell.カテゴリ && spell.カテゴリ.includes('回復')) {
+        if (selectedEffectTag === '回復' && (spell.カテゴリ || '').includes('回復')) {
           return true;
         }
-        if (selectedEffectTag === '攻撃力' && spell.カテゴリ && spell.カテゴリ.includes('攻撃力')) {
+        if (selectedEffectTag === '攻撃力' && (spell.カテゴリ || '').includes('攻撃力')) {
           return true;
         }
-        if (selectedEffectTag === '防御力' && spell.カテゴリ && spell.カテゴリ.includes('防御力')) {
+        if (selectedEffectTag === '防御力' && (spell.カテゴリ || '').includes('防御力')) {
           return true;
         }
-        if (selectedEffectTag === '移動速度' && spell.カテゴリ && spell.カテゴリ.includes('移動速度')) {
+        if (selectedEffectTag === '移動速度' && (spell.カテゴリ || '').includes('移動速度')) {
           return true;
         }
-        if (selectedEffectTag === 'お金' && spell.カテゴリ && spell.カテゴリ.includes('ボーナス')) {
+        if (selectedEffectTag === 'お金' && (spell.カテゴリ || '').includes('ボーナス')) {
           return true;
         }
-        if (selectedEffectTag === '時間' && spell.カテゴリ && spell.カテゴリ.includes('時間')) {
+        if (selectedEffectTag === '時間' && (spell.カテゴリ || '').includes('時間')) {
           return true;
         }
-        if (selectedEffectTag === '召喚' && spell.カテゴリ && spell.カテゴリ.includes('召喚')) {
+        if (selectedEffectTag === '召喚' && (spell.カテゴリ || '').includes('召喚')) {
           return true;
         }
-        if (selectedEffectTag === 'ギャンブル' && spell.カテゴリ && spell.カテゴリ.includes('ギャンブル')) {
+        if (selectedEffectTag === 'ギャンブル' && (spell.カテゴリ || '').includes('ギャンブル')) {
           return true;
         }
-        if (selectedEffectTag === '強化' && spell.カテゴリ && spell.カテゴリ.includes('強化')) {
+        if (selectedEffectTag === '強化' && (spell.カテゴリ || '').includes('強化')) {
           return true;
         }
-        if (selectedEffectTag === '特殊' && spell.カテゴリ && spell.カテゴリ.includes('特殊')) {
+        if (selectedEffectTag === '特殊' && (spell.カテゴリ || '').includes('特殊')) {
           return true;
         }
 
         // 通常のタグチェック
-        return spell.タグ && Array.isArray(spell.タグ) && spell.タグ.includes(selectedEffectTag);
+        return (spell.タグ || []).includes(selectedEffectTag);
       });
     }
 

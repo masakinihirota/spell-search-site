@@ -1,14 +1,13 @@
-import React from 'react';
-import { SpellCast } from '@/types';
+import { SpellData } from '@/types';
 import KanaBoard from './KanaBoard';
 
 interface SpellDetailProps {
-  spell: SpellCast;
+  spell: SpellData;
   onBack: () => void;
-  onToggleFavorite?: (spell: SpellCast) => void;
+  onToggleFavorite?: (spell: SpellData) => void;
   isFavorite?: boolean;
-  relatedSpells?: SpellCast[];
-  onRelatedSpellSelect?: (spell: SpellCast) => void;
+  relatedSpells?: SpellData[];
+  onRelatedSpellSelect?: (spell: SpellData) => void;
 }
 
 /**
@@ -24,10 +23,10 @@ const SpellDetail: React.FC<SpellDetailProps> = ({
   onRelatedSpellSelect
 }) => {
   // 必要な歌の段の数字を配列に変換
-  const requiredRows = spell.requiredSong.split('').map(Number);
+  const requiredRows = (spell.必要な歌の段 || '').split('').map(Number);
 
   // 唱える段の順番の数字を配列に変換
-  const castOrderColumns = spell.castOrder.split('').map(Number).map(n => n - 1);
+  const castOrderColumns = (spell.唱える段の順番 || '').split('').map(Number).map(n => n - 1);
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
@@ -77,7 +76,7 @@ const SpellDetail: React.FC<SpellDetailProps> = ({
         )}
       </div>
 
-      <h2 className="text-2xl font-bold mb-2">{spell.name}</h2>
+      <h2 className="text-2xl font-bold mb-2">{spell.名前}</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         <div>
@@ -85,25 +84,25 @@ const SpellDetail: React.FC<SpellDetailProps> = ({
             <h3 className="text-lg font-semibold mb-1">基本情報</h3>
             <div className="bg-gray-50 p-4 rounded-md">
               <p className="mb-2">
-                <span className="font-medium">カテゴリ:</span> {spell.category}
+                <span className="font-medium">カテゴリ:</span> {spell.カテゴリ}
               </p>
               <p className="mb-2">
-                <span className="font-medium">必要な歌の段:</span> {spell.requiredSong}
+                <span className="font-medium">必要な歌の段:</span> {spell.必要な歌の段}
               </p>
               <p>
-                <span className="font-medium">唱える段の順番:</span> {spell.castOrder}
+                <span className="font-medium">唱える段の順番:</span> {spell.唱える段の順番}
               </p>
             </div>
           </div>
 
           <div className="mb-4">
             <h3 className="text-lg font-semibold mb-1">効果</h3>
-            <p className="bg-gray-50 p-4 rounded-md">{spell.effect}</p>
+            <p className="bg-gray-50 p-4 rounded-md">{spell.説明}</p>
           </div>
 
           <div>
             <h3 className="text-lg font-semibold mb-1">詳細説明</h3>
-            <p className="bg-gray-50 p-4 rounded-md">{spell.description}</p>
+            <p className="bg-gray-50 p-4 rounded-md">{spell.説明}</p>
           </div>
         </div>
 
@@ -119,7 +118,7 @@ const SpellDetail: React.FC<SpellDetailProps> = ({
           <div className="mt-4">
             <h3 className="text-lg font-semibold mb-1">タグ</h3>
             <div className="flex flex-wrap gap-2">
-              {spell.tags.map((tag, index) => (
+              {(spell.タグ || []).map((tag, index) => (
                 <span
                   key={index}
                   className="bg-blue-100 text-blue-800 px-2 py-1 rounded-md text-sm"
@@ -142,9 +141,9 @@ const SpellDetail: React.FC<SpellDetailProps> = ({
                 className="bg-gray-50 p-3 rounded-md hover:bg-blue-50 cursor-pointer transition-colors"
                 onClick={() => onRelatedSpellSelect && onRelatedSpellSelect(relatedSpell)}
               >
-                <h4 className="font-medium">{relatedSpell.name}</h4>
-                <p className="text-sm text-gray-600 mt-1">{relatedSpell.requiredSong} → {relatedSpell.castOrder}</p>
-                <p className="text-xs text-gray-500 mt-1 truncate">{relatedSpell.effect}</p>
+                <h4 className="font-medium">{relatedSpell.名前}</h4>
+                <p className="text-sm text-gray-600 mt-1">{(relatedSpell.必要な歌の段 || '')} → {(relatedSpell.唱える段の順番 || '')}</p>
+                <p className="text-xs text-gray-500 mt-1 truncate">{relatedSpell.説明}</p>
               </div>
             ))}
           </div>

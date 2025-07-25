@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { SpellCast } from '@/types';
+import { SpellData } from '@/types';
 
 interface QuickAccessButtonsProps {
   onButtonClick: (query: string) => void;
-  favoriteSpells?: SpellCast[];
+  favoriteSpells?: SpellData[];
 }
 
 /**
@@ -53,8 +53,8 @@ const QuickAccessButtons: React.FC<QuickAccessButtonsProps> = ({
   };
 
   // お気に入りスペルのクリックハンドラ
-  const handleFavoriteClick = (spell: SpellCast) => {
-    onButtonClick(spell.name);
+  const handleFavoriteClick = (spell: SpellData) => {
+    onButtonClick(spell.名前 || '');
   };
 
   return (
@@ -88,7 +88,7 @@ const QuickAccessButtons: React.FC<QuickAccessButtonsProps> = ({
                 onClick={() => handleFavoriteClick(spell)}
                 className="px-3 py-2 rounded-md text-sm font-medium bg-yellow-100 text-yellow-800 hover:bg-yellow-200 transition-colors"
               >
-                {spell.name}
+                {spell.名前}
               </button>
             ))}
           </div>
