@@ -1,15 +1,11 @@
 import fs from 'fs';
 import path from 'path';
 
+import { SpellData } from '@/types';
+
 /**
  * スペルデータ.mdからJSONデータを生成するスクリプト
  */
-
-interface SpellData {
-  名前: string;
-  必要な歌の段: string;
-  唱える段の順番: string;
-}
 
 interface SpellCategory {
   [category: string]: SpellData[];

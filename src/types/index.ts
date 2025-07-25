@@ -3,10 +3,10 @@
  */
 export interface SpellData {
   id: string;
-  名前: string;
-  必要な歌の段: string;
-  唱える段の順番: string;
-  カテゴリ: string;
+  名前: string | undefined;
+  必要な歌の段: string | undefined;
+  唱える段の順番: string | undefined;
+  カテゴリ: string | undefined;
   説明?: string;
   タグ?: string[];
 }
@@ -16,10 +16,10 @@ export interface SpellData {
  */
 export interface SpellCast {
   id: string;
-  name: string;
-  requiredSong: string;
-  castOrder: string;
-  category: string;
+  name: string | undefined;
+  requiredSong: string | undefined;
+  castOrder: string | undefined;
+  category: string | undefined;
   effect?: string;
   description?: string;
   tags: string[];
