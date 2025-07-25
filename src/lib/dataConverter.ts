@@ -18,17 +18,15 @@ export async function convertSpellData(): Promise<SpellData[]> {
     console.log('スペルデータの読み込みを試みます...');
 
     let fileContents = null;
-    let usedPath = '';
 
     // 複数のパスを順番に試す
     for (const p of possiblePaths) {
       try {
         console.log(`パスを試行: ${p}`);
         fileContents = await fs.readFile(p, 'utf8');
-        usedPath = p;
         console.log(`スペルデータを読み込みました: ${p}`);
         break;
-      } catch (err) {
+      } catch {
         console.log(`パス ${p} からの読み込みに失敗しました`);
       }
     }
@@ -172,49 +170,6 @@ function generateTags(category: string, name: string, tag?: string): string[] {
   }
 
   return tags;
-}
-
-/**
- * 人気のある呪文かどうかを判定する
- * @param name 呪文名
- * @returns 人気のある呪文かどうか
- */
-function isPopularSpell(name: string): boolean {
-  // 人気のある呪文のリスト（仮）
-  const popularSpells = [
-    'ファイア', 'ブリザード', 'サンダー', 'キュア', 'ホミィ', 'ヒール',
-    'プロテクト', 'シールド', 'ガード', 'ボナス', 'マネー'
-  ];
-
-  return popularSpells.includes(name);
-}
-
-/**
- * 必要な歌の段から文字セットを生成する
- * @param requiredSong 必要な歌の段
- * @returns 文字セットの配列
- */
-function generateCharacterSets(requiredSong: string): string[] {
-  const characterSets: string[] = [];
-  const rows = [
-    'アイウエオヤユヨワン',
-    'カキクケコラリルレロ',
-    'サシスセソガギグゲゴ',
-    'タチツテトザジズゼゾ',
-    'ナニヌネノダヂヅデド',
-    'ハヒフヘホバビブベボ',
-    'マミムメモパピプペポ',
-    'ァィゥェォッャュョー'
-  ];
-
-  for (const digit of requiredSong) {
-    const rowIndex = parseInt(digit) - 1;
-    if (rowIndex >= 0 && rowIndex < rows.length) {
-      characterSets.push(rows[rowIndex]);
-    }
-  }
-
-  return characterSets;
 }
 
 /**

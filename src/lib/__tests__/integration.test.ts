@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { getHighlightedCellsFromSpellName } from '../spellUtils';
 import { kanaBoard } from '@/data/kanaBoard';
 import { SpellData } from '@/types';
@@ -39,6 +39,9 @@ describe('呪文ハイライト機能の統合テスト', () => {
   describe('実際の呪文データを使用した統合テスト', () => {
     it('「ムテキパル」の文字がすべて正しくハイライトされること', () => {
       const spell = testSpells[0];
+      if (!spell.名前) {
+        throw new Error('テスト用の呪文名が設定されていません');
+      }
       const result = getHighlightedCellsFromSpellName(spell.名前, kanaBoard);
 
       // 「ム」「テ」「キ」「パ」「ル」の5文字がハイライトされるはず
@@ -61,6 +64,9 @@ describe('呪文ハイライト機能の統合テスト', () => {
 
     it('「ニャラミ」の文字がすべて正しくハイライトされること', () => {
       const spell = testSpells[1];
+      if (!spell.名前) {
+        throw new Error('テスト用の呪文名が設定されていません');
+      }
       const result = getHighlightedCellsFromSpellName(spell.名前, kanaBoard);
 
       // 「ニ」「ャ」「ラ」「ミ」の4文字がハイライトされるはず
@@ -82,6 +88,9 @@ describe('呪文ハイライト機能の統合テスト', () => {
 
     it('同じ文字が複数回出現する「アアア」の場合、すべての出現箇所がハイライトされること', () => {
       const spell = testSpells[2];
+      if (!spell.名前) {
+        throw new Error('テスト用の呪文名が設定されていません');
+      }
       const result = getHighlightedCellsFromSpellName(spell.名前, kanaBoard);
 
       // 「ア」が3回出現するので、3つのセルがハイライトされるはず
@@ -97,6 +106,9 @@ describe('呪文ハイライト機能の統合テスト', () => {
     it('存在しない文字を含む呪文の場合、存在する文字のみがハイライトされること', () => {
       // 「ヒョウガラゴン」という呪文（「ゴン」はカナボードに存在しない想定）
       const spell = testSpells[3];
+      if (!spell.名前) {
+        throw new Error('テスト用の呪文名が設定されていません');
+      }
       const result = getHighlightedCellsFromSpellName(spell.名前, kanaBoard);
 
       // 「ヒ」「ョ」「ウ」「ガ」「ラ」「ゴ」の6文字がハイライトされるはず

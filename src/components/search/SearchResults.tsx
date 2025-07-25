@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { SpellData } from '@/types';
 import SongMatchingDisplay from '../spellDetail/SongMatchingDisplay';
 
@@ -44,13 +44,14 @@ const SearchResults: React.FC<SearchResultsProps> = ({
       }
     }, options);
 
-    if (loaderRef.current) {
-      observer.observe(loaderRef.current);
+    const currentLoader = loaderRef.current;
+    if (currentLoader) {
+      observer.observe(currentLoader);
     }
 
     return () => {
-      if (loaderRef.current) {
-        observer.unobserve(loaderRef.current);
+      if (currentLoader) {
+        observer.unobserve(currentLoader);
       }
     };
   }, [visibleItemCount, spells.length]);
