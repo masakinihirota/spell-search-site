@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import { KanaBoard as KanaBoardType, HighlightedCell } from '@/types';
 import { kanaBoard } from '@/data/kanaBoard';
 
 interface KanaBoardProps {
@@ -43,18 +42,26 @@ const KanaBoard: React.FC<KanaBoardProps> = ({
   };
 
   // ヘッダー行をメモ化
-  const tableHeader = useMemo(() => (
-    <thead>
-      <tr className="bg-gray-100">
-        <th className="py-2 px-3 border-b border-r border-gray-300 text-center font-bold text-base sm:text-lg">行</th>
-        {Array.from({ length: 10 }, (_, i) => (
-          <th key={i} className="py-2 px-3 border-b border-r border-gray-300 text-center">
-            {i + 1}
-          </th>
-        ))}
-      </tr>
-    </thead>
-  ), []);
+		const tableHeader = useMemo(
+			() => (
+				<thead>
+					<tr className="bg-gray-100">
+						<th className="py-2 px-3 border-b border-r border-gray-300 text-gray-600 text-center font-bold text-base sm:text-lg">
+							行
+						</th>
+						{Array.from({ length: 10 }, (_, i) => (
+							<th
+								key={i}
+								className="py-2 px-3 border-b border-r border-gray-300 text-gray-600  text-center"
+							>
+								{i + 1}
+							</th>
+						))}
+					</tr>
+				</thead>
+			),
+			[],
+		);
 
   return (
     <div className="overflow-x-auto">

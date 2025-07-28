@@ -1,16 +1,25 @@
 import { useState, useCallback, useMemo } from 'react';
-import { SpellData, SpellCast, HighlightedCell } from '@/types';
-import { getHighlightedCellsFromSpellName } from '@/lib/spellUtils';
 import { kanaBoard } from '@/data/kanaBoard';
+import { getHighlightedCellsFromSpellName } from '@/lib/spellUtils';
+import type { HighlightedCell, SpellCast, SpellData } from '@/types';
+
+// スペルの型を統一するヘルパー関数
+function getSpellName(spell: SpellCast | SpellData): string {
+  return (spell as SpellCast).name || (spell as SpellData).名前 || '';
+}
+
+function getRequiredSong(spell: SpellCast | SpellData): string {
+  return (spell as SpellCast).requiredSong || (spell as SpellData).必要な歌の段 || '';
+}
 
 /**
  * スペルボードの状態を管理するカスタムフック（最適化版）
  * @param initialSpells 初期スペルリスト
  * @returns スペルボード関連の状態と関数
  */
-export function useSpellBoard(initialSpells: SpellCast[] = []) {
+export function useSpellBoard(initialSpells: (SpellCast | SpellData)[] = []) {
   // 選択されたスペル
-  const [selectedSpell, setSelectedSpell] = useState<SpellCast | null>(null);
+  const [selectedSpell, setSelectedSpell] = useState<SpellCast | SpellData | null>(null);
 
   // ハイライトされた行
   const [highlightedRows, setHighlightedRows] = useState<number[]>([]);
@@ -22,7 +31,7 @@ export function useSpellBoard(initialSpells: SpellCast[] = []) {
   const [highlightedCells, setHighlightedCells] = useState<HighlightedCell[]>([]);
 
   // スペル選択処理（メモ化）
-  const handleSpellSelect = useCallback((spell: SpellCast) => {
+  const handleSpellSelect = useCallback((spell: SpellCast | SpellData) => {
     if (!spell) {
       return;
     }
@@ -30,7 +39,7 @@ export function useSpellBoard(initialSpells: SpellCast[] = []) {
     setSelectedSpell(spell);
 
     // 呪文名からハイライトするセルを特定
-    const spellName = spell.名前 || spell.name || '';
+    const spellName = getSpellName(spell);
     if (!spellName) {
       console.warn('呪文名が見つかりません:', spell);
       setHighlightedCells([]);
@@ -60,16 +69,19 @@ export function useSpellBoard(initialSpells: SpellCast[] = []) {
 
   // 初期スペルのインデックスをメモ化（行番号からスペルを素早く検索するため）
   const spellsByRow = useMemo(() => {
-    const index = new Map<number, SpellCast[]>();
+    const index = new Map<number, (SpellCast | SpellData)[]>();
 
     initialSpells.forEach(spell => {
-      const rows = (spell.requiredSong || spell.必要な歌の段 || '').split('').map(Number);
+      const rows = getRequiredSong(spell).split('').map((char: string) => Number(char));
 
-      rows.forEach(rowId => {
+      rows.forEach((rowId: number) => {
         if (!index.has(rowId)) {
           index.set(rowId, []);
         }
-        index.get(rowId)!.push(spell);
+        const spells = index.get(rowId);
+        if (spells) {
+          spells.push(spell);
+        }
       });
     });
 

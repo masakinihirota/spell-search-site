@@ -1,15 +1,11 @@
 import fs from 'fs';
 import path from 'path';
 
+import { SpellData } from '@/types';
+
 /**
  * スペルデータ.mdからJSONデータを生成するスクリプト
  */
-
-interface SpellData {
-  名前: string;
-  必要な歌の段: string;
-  唱える段の順番: string;
-}
 
 interface SpellCategory {
   [category: string]: SpellData[];
@@ -55,9 +51,11 @@ function parseSpellData(markdown: string): SpellCategory {
 
       if (cells.length === 3) {
         const spell: SpellData = {
+          id: `${currentCategory}-${categories[currentCategory].length + 1}`,
           名前: cells[0],
           必要な歌の段: cells[1],
-          唱える段の順番: cells[2]
+          唱える段の順番: cells[2],
+          カテゴリ: currentCategory
         };
 
         categories[currentCategory].push(spell);

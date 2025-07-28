@@ -11,13 +11,13 @@ https://zenn.dev/someone7140/articles/9c7e38cf1106d4
 
 # 次回作
 
-ヘッダにあるトップのBetaの隣に次回作のURLリンクを宣伝としておきます。
+トップに次回作のURLリンクを宣伝としておきます。
 
 masakinihirota
 
 https://vns-masakinihirota.vercel.app/
 
-このリンクをクリックすると、次回作の詳細情報や進捗状況を確認できます。
+このリンクをクリックすると、開発中のサイトが見れます。(2025年7月19日現在、現状中身無し)
 
 # このアプリの概要
 
@@ -29,7 +29,7 @@ https://vns-masakinihirota.vercel.app/
 
 歌ビルドの歌を探しやすくするWebアプリです。
 
-このアプリでは、以下の機能を提供します：
+このアプリでは、以下の機能を提供します。
 - 歌の検索機能
 - 歌の詳細情報の表示
 - お気に入りリストの作成と管理
@@ -48,3 +48,9 @@ https://www.youtube.com/watch?v=X2xA7JVbhGc
 
 masakinihirota/spell-search-site
 https://github.com/masakinihirota/spell-search-site
+
+## デプロイ
+
+vercel
+スペルトナエル検索サイト
+https://spell-search-site.vercel.app/
