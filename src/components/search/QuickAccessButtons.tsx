@@ -1,5 +1,4 @@
 import React from 'react';
-import { SpellData } from '@/types';
 
 interface QuickAccessButtonsProps {
   onQuickAccess: (category: string) => void;
@@ -23,16 +22,6 @@ const QuickAccessButtons: React.FC<QuickAccessButtonsProps> = ({
     { id: 'summon', name: '召喚系', icon: '🐾', color: 'bg-yellow-500' },
     { id: 'utility', name: '特殊系', icon: '🔮', color: 'bg-indigo-500' },
   ];
-
-  // カテゴリマッピング（主要カテゴリと実際のカテゴリの対応）
-  const categoryMapping: Record<string, string[]> = {
-    'attack': ['攻撃魔法', '弱点魔法', '雷攻撃魔法', '炎攻撃魔法', '氷攻撃魔法', '風攻撃魔法', '重力攻撃魔法', '特殊攻撃魔法'],
-    'heal': ['体力上昇魔法'],
-    'buff': ['攻撃力上昇魔法', '防御力上昇魔法', '移動速度上昇魔法', 'ボーナス上昇魔法', '強化魔法'],
-    'debuff': ['能力値変更', '割合体力減少魔法', '割合攻撃力減少魔法', '毒魔法'],
-    'summon': ['動物召喚魔法', '精霊召喚魔法'],
-    'utility': ['特殊能力上昇魔法', '時間操作魔法', '一文字魔法', 'ギャンブル魔法', '特殊魔法'],
-  };
 
   return (
     <div className="my-4">

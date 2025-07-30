@@ -21,9 +21,7 @@ const SearchExample: React.FC = () => {
     setQuery,
     debouncedQuery,
     isSearching,
-    searchHistory,
-    clearQuery,
-    saveToHistory
+    searchHistory
   } = useSearchBox({
     debounceTime: 300,
     onSearch: (q) => {
@@ -59,11 +57,6 @@ const SearchExample: React.FC = () => {
   // 検索ボックスの変更ハンドラ
   const handleSearch = (searchQuery: string) => {
     setQuery(searchQuery);
-  };
-
-  // 検索フォームの送信ハンドラ
-  const handleSubmit = (searchQuery: string) => {
-    saveToHistory(searchQuery);
   };
 
   return (

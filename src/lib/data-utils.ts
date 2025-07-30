@@ -120,12 +120,12 @@ export async function searchSpells(query: string): Promise<SpellCast[]> {
     const lowerQuery = query.toLowerCase();
 
     return spells.filter(spell =>
-      spell.name.toLowerCase().includes(lowerQuery) ||
-      spell.requiredSong.includes(lowerQuery) ||
-      spell.castOrder.includes(lowerQuery) ||
-      spell.effect?.toLowerCase().includes(lowerQuery) ||
-      spell.category.toLowerCase().includes(lowerQuery) ||
-      spell.tags.some(tag => tag.toLowerCase().includes(lowerQuery))
+      (spell.name || '').toLowerCase().includes(lowerQuery) ||
+      (spell.requiredSong || '').includes(lowerQuery) ||
+      (spell.castOrder || '').includes(lowerQuery) ||
+      (spell.effect || '').toLowerCase().includes(lowerQuery) ||
+      (spell.category || '').toLowerCase().includes(lowerQuery) ||
+      (spell.tags || []).some(tag => tag.toLowerCase().includes(lowerQuery))
     );
   } catch (error) {
     console.error(`検索クエリ "${query}" でのスペル検索に失敗しました:`, error);

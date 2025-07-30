@@ -1,5 +1,4 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { SpellCast } from '@/types';
 
 interface UseSearchBoxProps {
   initialQuery?: string;
