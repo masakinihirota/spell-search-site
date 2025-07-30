@@ -45,14 +45,14 @@ const KanaBoard: React.FC<KanaBoardProps> = ({
 		const tableHeader = useMemo(
 			() => (
 				<thead>
-					<tr className="bg-gray-100">
-						<th className="py-2 px-3 border-b border-r border-gray-300 text-gray-600 text-center font-bold text-base sm:text-lg">
+					<tr className="bg-gray-100 dark:bg-gray-800">
+						<th className="py-2 px-3 border-b border-r border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 text-center font-bold text-base sm:text-lg">
 							行
 						</th>
 						{Array.from({ length: 10 }, (_, i) => (
 							<th
 								key={i}
-								className="py-2 px-3 border-b border-r border-gray-300 text-gray-600  text-center"
+								className="py-2 px-3 border-b border-r border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 text-center"
 							>
 								{i + 1}
 							</th>
@@ -65,7 +65,7 @@ const KanaBoard: React.FC<KanaBoardProps> = ({
 
   return (
     <div className="overflow-x-auto">
-      <table className="min-w-full border border-gray-300 bg-white text-sm sm:text-base">
+      <table className="min-w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-sm sm:text-base">
         {tableHeader}
         <tbody>
           {kanaBoard.rows.map((row) => (
@@ -76,14 +76,14 @@ const KanaBoard: React.FC<KanaBoardProps> = ({
               }`}
             >
               <td
-                className={`py-2 px-3 border-b border-r border-gray-300 font-extrabold text-center text-base sm:text-lg md:text-xl cursor-pointer
+                className={`py-2 px-3 border-b border-r border-gray-300 dark:border-gray-600 font-extrabold text-center text-base sm:text-lg md:text-xl cursor-pointer
                   ${highlightedRows.includes(row.id)
                     ? activeNumberButtons.includes(row.id)
-                      ? 'bg-yellow-200 text-black ring-2 ring-red-500 ring-inset' // ハイライト状態かつ所持状態
-                      : 'bg-yellow-200 text-black ring-2 ring-yellow-400 ring-inset' // ハイライト状態のみ
+                      ? 'bg-yellow-200 dark:bg-yellow-800 text-black dark:text-white kana-board-number-active' // ハイライト状態かつ所持状態
+                      : 'bg-yellow-200 dark:bg-yellow-800 text-black dark:text-white ring-2 ring-yellow-400 dark:ring-yellow-300 ring-inset' // ハイライト状態のみ
                     : activeNumberButtons.includes(row.id)
-                      ? 'bg-gray-100 text-gray-800 ring-2 ring-red-500 ring-inset' // 所持状態のみ
-                      : 'bg-gray-100 text-gray-800'}`}
+                      ? 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 kana-board-number-active' // 所持状態のみ
+                      : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200'}`}
                 onClick={() => onRowNumberClick && onRowNumberClick(row.id)}
               >
                 {row.id}
@@ -91,15 +91,15 @@ const KanaBoard: React.FC<KanaBoardProps> = ({
               {row.characters.map((char, columnIndex) => (
                 <td
                   key={columnIndex}
-                  className={`py-2 px-3 border-b border-r border-gray-300 text-center cursor-pointer text-gray-800 font-medium ${
+                  className={`py-2 px-3 border-b border-r border-gray-300 dark:border-gray-600 text-center cursor-pointer text-gray-800 dark:text-gray-200 font-medium ${
                     isCellHighlighted(row.id, columnIndex)
-                      ? 'bg-yellow-300 font-bold text-black' // 呪文名の文字をハイライト（文字を濃く）
+                      ? 'bg-yellow-300 dark:bg-yellow-700 font-bold text-black dark:text-white' // 呪文名の文字をハイライト（文字を濃く）
                       : highlightedRows.includes(row.id) && highlightedColumns.includes(columnIndex)
-                      ? 'bg-yellow-300 font-bold text-black' // 行と列の交差点（文字を濃く）
+                      ? 'bg-yellow-300 dark:bg-yellow-700 font-bold text-black dark:text-white' // 行と列の交差点（文字を濃く）
                       : highlightedRows.includes(row.id)
-                      ? 'bg-yellow-100' // 行のハイライト
+                      ? 'bg-yellow-100 dark:bg-yellow-900' // 行のハイライト
                       : highlightedColumns.includes(columnIndex)
-                      ? 'bg-yellow-50' // 列のハイライト
+                      ? 'bg-yellow-50 dark:bg-yellow-950' // 列のハイライト
                       : ''
                   }`}
                   onClick={() => onCellClick && onCellClick(row.id, columnIndex)}
