@@ -1,10 +1,11 @@
+import type { MatchingCache, SongMatchingResult, SpellCast } from '@/types';
 import { calculateSongMatching } from './songUtils';
-import type { SpellCast, MatchingCache, SongMatchingResult } from '@/types';
 
 class SpellMatchingCache {
   private static instance: SpellMatchingCache;
   private cache: MatchingCache = new Map();
   private allSpells: SpellCast[] = [];
+  private isInitialized: boolean = false;
 
   private constructor() {
     // private constructor to prevent direct instantiation
@@ -21,6 +22,8 @@ class SpellMatchingCache {
     this.allSpells = spells;
     // 初期状態（所持なし）でキャッシュを計算
     this.rebuildCache('');
+    // 初期化完了フラグを設定
+    this.isInitialized = true;
   }
 
   public rebuildCache(possessedSong: string): void {
@@ -34,6 +37,22 @@ class SpellMatchingCache {
   }
 
   public getMatchingResult(spellId: string): SongMatchingResult | undefined {
+    // 初期化チェック：未初期化時はundefinedを返す
+    if (!this.isInitialized) {
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('SpellMatchingCache: キャッシュが初期化されていません');
+      }
+      return undefined;
+    }
+
+    // spellIdの妥当性チェック
+    if (!spellId || spellId.trim() === '') {
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('SpellMatchingCache: 無効なspellIdが指定されました:', spellId);
+      }
+      return undefined;
+    }
+
     return this.cache.get(spellId);
   }
 
