@@ -156,6 +156,28 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <Header />
+      <div>
+        {/* 参考動画 */}
+        <div className="max-w-4xl mx-auto mb-6 px-4">
+          <div className="relative w-full" style={{ paddingBottom: '56.25%' /* 16:9 aspect ratio */ }}>
+            <iframe
+              src="https://www.youtube.com/embed/X2xA7JVbhGc?si=RUEzVZX1kx5BDhH-"
+              title="YouTube video player"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+              className="absolute top-0 left-0 w-full h-full rounded-lg shadow-md"
+            ></iframe>
+          </div>
+          <h3 className="text-lg font-semibold mt-4 text-center text-gray-800 dark:text-gray-200">歌ビルドでの攻略動画</h3>
+        </div>
+
+        <div className="max-w-4xl mx-auto px-4">
+          <p>攻略サイト:スペルトナエル(持ち込み無し) U-END を楽にクリアするための「考えない歌金魚ビルド」</p>
+          <a href="https://note.com/masakinihirota/n/ncc599bf9af3b" className="text-blue-500 hover:underline">
+            https://note.com/masakinihirota/n/ncc599bf9af3b
+          </a>
+        </div>
+      </div>
 
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
@@ -251,7 +273,7 @@ export default function Home() {
                       </svg>
                     </button>
                   </div>
-                  
+
                 </div>
 
                 {isCacheReady && (
